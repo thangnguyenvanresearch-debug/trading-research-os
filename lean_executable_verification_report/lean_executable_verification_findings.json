@@ -1,0 +1,32 @@
+{
+  "docker_available_initially": true,
+  "docker_available_final": false,
+  "lean_cli_available": true,
+  "lean_version": "1.0.225",
+  "files_changed": [
+    "src/lean_brain/lean_adapter.py",
+    "src/lean_brain/lean_runner.py",
+    "src/lean_brain/lean_project_builder.py",
+    "tests/test_lean_adapter.py",
+    "tests/test_lean_runner.py"
+  ],
+  "executable_run_attempted": true,
+  "executable_run_status": "failed",
+  "run_id": "lean_bt_f4d0947fa6ef",
+  "project_path": "D:\\AI2\\QuantGit\\trading-research-os\\data\\generated\\lean\\projects\\equal_weight_demo_lean_5a615f2a482e",
+  "report_path": "D:\\AI2\\QuantGit\\trading-research-os\\reports\\lean\\lean_bt_f4d0947fa6ef_equal_weight_demo.md",
+  "metrics_parsed": false,
+  "metrics_count": 0,
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 104,
+  "dashboard_checked": false,
+  "dashboard_error": "Connection refused at http://localhost:8501",
+  "safety_issues": [],
+  "remaining_issues": [
+    "Executable LEAN backtest is not verified because the CLI run timed out after 900 seconds.",
+    "Docker daemon became unreachable after the LEAN attempt.",
+    "No LEAN result/statistics files were produced, so no metrics were parsed.",
+    "Dashboard HTTP check failed because Streamlit was not running."
+  ]
+}

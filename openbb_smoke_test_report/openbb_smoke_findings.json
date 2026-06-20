@@ -1,0 +1,30 @@
+{
+  "openbb_installed": true,
+  "openbb_import_ok": true,
+  "ingestion_command_passed": true,
+  "rows_inserted": 2230,
+  "rows_failed": 0,
+  "provider_summary": {
+    "yfinance": {
+      "symbols": ["AAPL", "MSFT"],
+      "rows": 2230
+    }
+  },
+  "db_rows_verified": true,
+  "dashboard_checked": true,
+  "dashboard_check_type": "compile_only",
+  "patches_made": [],
+  "tests_passed": true,
+  "safe_workflow_passed": true,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Parquet output fell back to CSV because no parquet engine is installed in .venv-openbb.",
+    "Dashboard was compile-checked but not launched visually.",
+    "Initial parallel OpenBB import/build caused a temporary venv-local build lock conflict; sequential rerun succeeded."
+  ],
+  "recommended_next_steps": [
+    "Optionally install pyarrow in .venv-openbb if Parquet output is required.",
+    "Optionally launch Streamlit manually and inspect the OpenBB Ingestion page.",
+    "Keep OpenBB research/data-only and do not add execution features."
+  ]
+}

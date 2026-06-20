@@ -1,0 +1,50 @@
+strategy_name: breakout_momentum_volume_v1
+asset_class: crypto
+engine_target: freqtrade
+timeframe: 1h
+strategy_type: breakout_momentum
+regime_fit:
+- breakout_candidate
+- high_volatility
+entry_logic:
+  all:
+  - indicator: close
+    operator: '>'
+    value: bb_upper
+  - indicator: macd
+    operator: '>'
+    value: macd_signal
+  - indicator: volume_zscore
+    operator: '>'
+    value: 1.0
+exit_logic:
+  any:
+  - indicator: close
+    operator: <
+    value: sma_20
+  - indicator: rsi_14
+    operator: '>'
+    value: 78
+rationale: Tests whether volatility expansion plus volume confirms continuation.
+pairs:
+- BTC/USDT
+- ETH/USDT
+- SOL/USDT
+risk:
+  stop_loss: -0.03
+  take_profit: 0.06
+  trailing_stop: true
+  max_open_trades: 3
+  max_pair_exposure: 0.25
+  leverage_allowed: false
+  futures_allowed: false
+validation:
+  min_trades: 50
+  max_drawdown_limit: 0.2
+  require_out_of_sample: true
+  require_fee_model: true
+  require_slippage_model: true
+rejection_criteria:
+- Reject if fee/slippage-adjusted performance is negative.
+- Reject if result is concentrated in one pair or one extreme regime.
+- Reject if out-of-sample performance fails configured thresholds.

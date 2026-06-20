@@ -1,0 +1,33 @@
+{
+  "duplicate_cleanup_dry_run_passed": true,
+  "duplicate_cleanup_applied": true,
+  "backup_path": "D:\\AI2\\QuantGit\\trading-research-os\\reports\\maintenance\\openbb_market_data_duplicates_2026-06-14T150431_0000.csv",
+  "aapl_rows_before": 2230,
+  "aapl_distinct_before": 1115,
+  "msft_rows_before": 2230,
+  "msft_distinct_before": 1115,
+  "aapl_rows_after": 1115,
+  "aapl_distinct_after": 1115,
+  "msft_rows_after": 1115,
+  "msft_distinct_after": 1115,
+  "ollama_available": true,
+  "ollama_version": "0.30.8",
+  "model_available": true,
+  "model_used": "qwen2.5:3b",
+  "pipeline_rerun_status": "completed_with_warnings",
+  "latest_run_id": "daily_262063e1ff1f",
+  "latest_memo_id": "memo_d03ffe674cfe",
+  "latest_memo_status": "completed",
+  "latest_memo_response_len": 588,
+  "analytics_report_path": "D:\\AI2\\QuantGit\\trading-research-os\\reports\\daily_research\\daily_262063e1ff1f\\daily_research_summary.md",
+  "local_ai_report_path": "D:\\AI2\\QuantGit\\trading-research-os\\reports\\local_ai\\memo_d03ffe674cfe_daily_research_note.md",
+  "scheduler_ready": true,
+  "dashboard_checked": true,
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 86,
+  "safety_issues": [],
+  "remaining_issues": [
+    "DuckDB is unavailable; SQLite fallback is active. This is acceptable for local demo/research, but DuckDB is recommended for larger analytical workloads."
+  ]
+}

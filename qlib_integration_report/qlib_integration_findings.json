@@ -1,0 +1,27 @@
+{
+  "qlib_integration_added": true,
+  "qlib_available": false,
+  "dataset_exported": true,
+  "export_id": "qlib_export_69643487871e",
+  "experiment_run_status": "unavailable",
+  "run_id": "qlib_run_01399ff0a449",
+  "features_path": "D:\\AI2\\QuantGit\\trading-research-os\\data\\generated\\qlib\\datasets\\qlib_export_69643487871e\\features.csv",
+  "manifest_path": "D:\\AI2\\QuantGit\\trading-research-os\\data\\generated\\qlib\\datasets\\qlib_export_69643487871e\\manifest.json",
+  "report_path": "D:\\AI2\\QuantGit\\trading-research-os\\reports\\qlib\\qlib_run_01399ff0a449_qlib_demo.md",
+  "feature_rows": 2220,
+  "feature_columns": 13,
+  "metrics_count": 0,
+  "predictions_count": 0,
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 120,
+  "dashboard_page_added": true,
+  "dashboard_http_checked": true,
+  "dashboard_running": false,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Qlib package is not installed, so true Qlib execution is not verified.",
+    "Dashboard visual inspection was not performed because Streamlit was not running.",
+    "Full Qlib trainer integration remains future work; current available-package branch is a labeled local baseline placeholder."
+  ]
+}

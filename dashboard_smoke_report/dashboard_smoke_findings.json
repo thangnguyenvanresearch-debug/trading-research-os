@@ -1,0 +1,36 @@
+{
+  "streamlit_installed": true,
+  "environment": ".venv-openbb",
+  "port": 8501,
+  "working_url": "http://localhost:8501",
+  "http_status": 200,
+  "health_endpoint": "ok",
+  "dashboard_launch_passed": true,
+  "openbb_page_verified": false,
+  "openbb_page_verification_method": "static_source_plus_http_health; visual browser automation unavailable",
+  "visual_browser_verified": false,
+  "streamlit_pid": 624,
+  "files_changed": [
+    "dashboard_smoke_report/dashboard_smoke_summary.md",
+    "dashboard_smoke_report/dashboard_smoke_details.md",
+    "dashboard_smoke_report/dashboard_smoke_findings.json",
+    "dashboard_smoke_streamlit.out.log",
+    "dashboard_smoke_streamlit.err.log"
+  ],
+  "source_files_changed": [],
+  "environment_changes": [
+    "Installed streamlit into .venv-openbb"
+  ],
+  "tests_passed": true,
+  "pytest_result": "44 passed",
+  "compileall_passed": true,
+  "safe_workflow_passed": true,
+  "openbb_local_rows": {
+    "AAPL": 1115,
+    "MSFT": 1115
+  },
+  "safety_issues": [],
+  "remaining_issues": [
+    "Visual browser inspection was not automated because Playwright/browser automation was unavailable."
+  ]
+}

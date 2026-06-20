@@ -1,0 +1,19 @@
+enabled: true
+provider: ollama
+base_url: http://localhost:11434
+model: qwen2.5:3b
+timeout_seconds: 180
+max_context_chars: 12000
+retry_attempts: 2
+retry_backoff_seconds: 3
+temperature: 0.2
+safe_mode: true
+allow_external_api: false
+allow_openai_api: false
+allow_chatgpt_oauth: false
+allow_browser_automation: false
+allowed_tasks:
+  - market_review
+  - strategy_review
+  - risk_review
+  - daily_research_note

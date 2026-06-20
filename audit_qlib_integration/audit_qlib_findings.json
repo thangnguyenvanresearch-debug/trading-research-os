@@ -1,0 +1,34 @@
+{
+  "verdict": "accepted_with_minor_followups",
+  "score": 8.8,
+  "qlib_available": false,
+  "dataset_exported": true,
+  "dataset_export_id": "qlib_export_b9c5625b0de2",
+  "dataset_rows": 2220,
+  "dataset_columns": 13,
+  "dataset_duplicate_symbol_timestamp": 0,
+  "experiment_run_status": "unavailable",
+  "run_id": "qlib_run_045090f920b8",
+  "metrics_count": 0,
+  "predictions_count": 0,
+  "tests": "passed",
+  "test_count": 120,
+  "dashboard_running": false,
+  "safety_issues": [],
+  "lookahead_issues": [],
+  "critical_issues": [],
+  "high_issues": [],
+  "medium_issues": [],
+  "low_issues": [
+    "Qlib package is not installed, so true Qlib execution is not verified.",
+    "If Qlib is installed later, current branch runs a pandas baseline placeholder rather than a true Qlib trainer.",
+    "Dashboard visual inspection was not verified because Streamlit was not running.",
+    "Tests could assert rolling feature formulas more explicitly."
+  ],
+  "recommended_next_steps": [
+    "Checkpoint the current safe partial Qlib integration.",
+    "Add stricter rolling feature formula tests in a low-risk hardening pass.",
+    "Implement true local-only Qlib trainer in a separate phase after installing Qlib.",
+    "Keep daily Qlib integration disabled by default until true Qlib execution is verified."
+  ]
+}

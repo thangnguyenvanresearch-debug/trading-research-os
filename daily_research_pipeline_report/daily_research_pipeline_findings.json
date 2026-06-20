@@ -1,0 +1,23 @@
+{
+  "pipeline_implemented": true,
+  "dry_run_passed": true,
+  "dry_run_id": "daily_ff7f9d4fa5b9",
+  "real_run_attempted": true,
+  "real_run_status": "completed_with_warnings",
+  "run_id": "daily_f3e6beb62b78",
+  "local_ai_memo_id": "memo_15a2221eb8b2",
+  "local_ai_memo_response_len": 2183,
+  "analytics_report_path": "reports/daily_research/daily_f3e6beb62b78/daily_research_summary.md",
+  "local_ai_report_path": "reports/local_ai/memo_15a2221eb8b2_daily_research_note.md",
+  "compile_passed": true,
+  "dashboard_compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 74,
+  "dashboard_page_added": true,
+  "dashboard_http_status": 200,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Fresh OpenBB ingestion was skipped in the real run because the base Python environment does not have OpenBB installed; existing local OpenBB data was used.",
+    "Visual dashboard inspection was not automated."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "lean_integration_added": true,
+  "lean_cli_available": false,
+  "docker_available": true,
+  "skeleton_created": true,
+  "local_data_exported": true,
+  "run_status": "unavailable",
+  "skip_run_status": "skeleton_created",
+  "run_id": "lean_bt_496f6c073884",
+  "skip_run_id": "lean_bt_f9a4224eb9c6",
+  "project_path": "D:\\AI2\\QuantGit\\trading-research-os\\data\\generated\\lean\\projects\\equal_weight_demo_lean_d41360a694ff",
+  "report_path": "D:\\AI2\\QuantGit\\trading-research-os\\reports\\lean\\lean_bt_496f6c073884_equal_weight_demo.md",
+  "data_manifest_path": "D:\\AI2\\QuantGit\\trading-research-os\\data\\generated\\lean\\data\\data_manifest.json",
+  "exported_rows": {
+    "AAPL": 1115,
+    "MSFT": 1115
+  },
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 102,
+  "dashboard_page_added": true,
+  "dashboard_checked": true,
+  "safety_issues": [],
+  "remaining_issues": [
+    "LEAN CLI is not installed, so executable local LEAN backtests were not verified.",
+    "Generated LEAN project remains a research-only skeleton until LEAN CLI is installed and a local run succeeds."
+  ]
+}

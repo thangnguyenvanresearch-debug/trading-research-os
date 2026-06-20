@@ -1,0 +1,21 @@
+# So sánh lỗi cũ và kết quả sửa đổi (Fixed vs Unfixed Issues)
+
+Dưới đây là bảng đối chiếu chi tiết giữa các vấn đề được phát hiện ở Đợt 1 và kết quả xác minh trong Đợt 2 sau khi thực hiện hardening pass.
+
+| Lỗi phát hiện (Đợt 1) | Giải pháp đã tuyên bố | Minh chứng đã kiểm tra (Evidence Inspected) | Trạng thái (Status) | Hành động cần thiết còn lại |
+|---|---|---|---|---|
+| **1. Freqtrade CLI backtest path trả về kết quả rỗng** | Tích hợp bộ kết quả thực tế, kết nối Parser và xử lý lỗi CLI | Kiểm tra hàm `_run_freqtrade_cli` trong [batch_backtest_runner.py](file:///D:/AI2/QuantGit/trading-research-os/src/freqtrade_brain/batch_backtest_runner.py), thấy CLI gọi subprocess thực tế và ném lỗi nếu Freqtrade trả về mã lỗi. | **Fixed** | Không. Luồng CLI đã chạy thực tế. |
+| **2. Freqtrade data adapter âm thầm sinh dữ liệu giả** | Yêu cầu cờ `--sample` tường minh, CLI mode báo lỗi rõ ràng nếu thiếu tệp | Đọc mã nguồn [freqtrade_data_adapter.py](file:///D:/AI2/QuantGit/trading-research-os/src/data_brain/freqtrade_data_adapter.py), thấy các kiểm tra `if not sample:` ném ngoại lệ rõ ràng, cơ chế import thực tế duyệt qua các tệp JSON/GZ/Feather mà không tự động fallback. | **Fixed** | Không. Đã bảo đảm tính trung thực dữ liệu. |
+| **3. Risk gate thiếu divergence, look-ahead, archived và promotion** | Thêm dry-run divergence, look-ahead check tĩnh, archived check, và promotion rules | Đọc mã nguồn [risk_gate.py](file:///D:/AI2/QuantGit/trading-research-os/src/risk_brain/risk_gate.py) và [overfit_detector.py](file:///D:/AI2/QuantGit/trading-research-os/src/risk_brain/overfit_detector.py). Kiểm tra hàm `review_metrics` và `_approved_for_dry_run`. | **Fixed** | Không. Các quy tắc thẩm định rủi ro đã được áp dụng đầy đủ. |
+| **4. Decision engine hardcode BTC/USDT và xóa sạch lịch sử** | Xuất quyết định theo từng symbol cụ thể từ pair_level_metrics/specs, loại bỏ lệnh delete lịch sử | Đọc mã nguồn [decision_engine.py](file:///D:/AI2/QuantGit/trading-research-os/src/decision_brain/decision_engine.py), thấy vòng lặp duyệt qua các cặp giao dịch sinh quyết định lưu trữ vào DB mà không xóa quyết định cũ. | **Fixed** | Không. Quyết định đã hoạt động linh hoạt và lưu trữ lịch sử hoàn chỉnh. |
+| **5. Không có tệp .gitignore** | Bổ sung tệp .gitignore che dấu .env, database, data, reports, cache | Kiểm tra tệp [.gitignore](file:///D:/AI2/QuantGit/trading-research-os/.gitignore) thấy cấu hình loại trừ rất chi tiết, bảo toàn cấu trúc thư mục thông qua `.gitkeep`. | **Fixed** | Không. |
+| **6. File runtime được sinh ra ghi đè vào thư mục nguồn src** | Chuyển vị trí lưu trữ mặc định về data/generated/specs và data/generated/freqtrade_strategies | Kiểm tra cấu hình `runtime_paths` trong [global.yaml](file:///D:/AI2/QuantGit/trading-research-os/configs/global.yaml) và đường dẫn lưu xuất của strategy converter. | **Fixed** | Không. Mã nguồn sạch sẽ, không còn file sinh ra ngoài data/generated. |
+| **7. Kiểm thử quá nông** | Nâng cấp bộ kiểm thử lên 19 test cases, bổ sung test tích hợp toàn diện | Chạy lệnh `python -m pytest -q` đạt 19 passed. Kiểm tra mã nguồn các tệp tin trong thư mục [tests/](file:///D:/AI2/QuantGit/trading-research-os/tests/) thấy phạm vi kiểm thử rất sâu. | **Fixed** | Không. |
+| **8. Spec validator còn nông** | Thẩm định sâu miền giá trị dừng lỗ/chốt lời và cấu trúc logic điều kiện vào/ra lệnh | Kiểm tra mã nguồn [strategy_spec_validator.py](file:///D:/AI2/QuantGit/trading-research-os/src/ai_strategy_brain/strategy_spec_validator.py). | **Fixed** | Không. |
+| **9. Dashboard thiếu diagnostics** | Hiển thị nguồn dữ liệu, nguồn gốc chạy backtest, cảnh báo phân tích, và trạng thái engine | Kiểm tra mã nguồn [streamlit_app.py](file:///D:/AI2/QuantGit/trading-research-os/src/dashboard/streamlit_app.py) và các trang trong [pages/](file:///D:/AI2/QuantGit/trading-research-os/src/dashboard/pages/). | **Fixed** | Không. |
+| **10. README thiếu hướng dẫn** | Cập nhật tài liệu vai trò engine, hướng dẫn cấu hình và sửa lỗi khi thiếu CLI | Đọc tệp [README.md](file:///D:/AI2/QuantGit/trading-research-os/README.md) thấy thông tin hướng dẫn cực kỳ rõ ràng, trung thực. | **Fixed** | Không. |
+
+## Tổng kết tình trạng
+* **Số lỗi đã sửa đổi thành công:** 10 / 10
+* **Số lỗi chưa sửa đổi (Unfixed):** 0
+* **Hồi quy (Regressions):** 0

@@ -1,0 +1,52 @@
+engines:
+  openbb:
+    role: data_research_connector
+    status: partial
+    current_capability: Optional OpenBB market/macro ingestion adapter with local database and file persistence.
+    next_step: Install OpenBB and run scripts/ingest_openbb_data.py for provider-specific research data.
+    safe_for_live: false
+    required_for_v1: false
+    execution_allowed: false
+  finceptterminal:
+    role: terminal_ux_reference
+    status: scaffold_only
+    current_capability: Mentioned as future terminal-style analytics inspiration only.
+    next_step: Add a real FinceptTerminal adapter or UI shell in a future phase.
+    safe_for_live: false
+    required_for_v1: false
+    execution_allowed: false
+  qlib:
+    role: ml_quant_research_brain
+    status: partial
+    current_capability: Research-only local OpenBB feature dataset export and optional Qlib experiment wrapper.
+    next_step: Install Qlib locally to run true Qlib ML/factor experiments; dataset export works without Qlib.
+    safe_for_live: false
+    required_for_v1: false
+    execution_allowed: research_only
+    requires_optional_package: true
+  lean:
+    role: institutional_portfolio_backtest_engine
+    status: partial
+    current_capability: Research-only local OpenBB data export, LEAN-style project skeleton generation, and optional local LEAN CLI backtest wrapper.
+    next_step: Install LEAN CLI and Docker locally if full local LEAN backtests are needed; no QuantConnect cloud or brokerage credentials are used.
+    safe_for_live: false
+    required_for_v1: false
+    execution_allowed: local_backtest_only
+  freqtrade:
+    role: crypto_spot_backtest_and_dry_run_engine
+    status: partial
+    safe_for_live: false
+    required_for_v1: true
+    execution_allowed: dry_run_only
+  hummingbot:
+    role: paper_market_making_and_arbitrage_lab
+    status: partial
+    safe_for_live: false
+    required_for_v1: false
+    execution_allowed: paper_only
+  nautilus:
+    role: future_event_driven_architecture_target
+    status: scaffold_only
+    safe_for_live: false
+    required_for_v1: false
+    execution_allowed: false

@@ -1,0 +1,19 @@
+global:
+  min_trades: 50
+  max_drawdown_limit: 0.20
+  min_profit_factor: 1.10
+  min_out_of_sample_score: 0.0
+  max_pair_concentration: 0.70
+  min_fee_slippage_adjusted_return: 0.0
+  max_equity_curve_smoothness: 0.985
+  material_dry_run_divergence: 0.25
+  allowed_statuses:
+    - rejected
+    - watchlist
+    - paper_only
+    - approved_for_dry_run
+    - archived
+safety:
+  live_trading_allowed: false
+  leverage_allowed: false
+  futures_allowed: false

@@ -1,0 +1,29 @@
+{
+  "ollama_installed": false,
+  "ollama_available": false,
+  "model_used": null,
+  "real_local_memo_generated": false,
+  "memo_id": null,
+  "memo_status": null,
+  "response_len": 0,
+  "report_path": null,
+  "compile_passed": true,
+  "dashboard_compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 66,
+  "dashboard_checked": true,
+  "dashboard_http_status": 200,
+  "visual_dashboard_verified": false,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Ollama CLI is not installed or not on PATH.",
+    "Ollama service is unavailable at http://localhost:11434.",
+    "Real local memo generation was skipped because no local model runtime was available.",
+    "Manual visual verification of page 12_local_ai_research remains."
+  ],
+  "recommended_next_steps": [
+    "Install and start Ollama manually.",
+    "Run: ollama pull qwen2.5:3b",
+    "Run: python scripts/run_local_ai_research.py --symbols AAPL MSFT --provider yfinance --interval 1d --task-type market_review --model qwen2.5:3b"
+  ]
+}

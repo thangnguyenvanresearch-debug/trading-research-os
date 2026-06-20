@@ -1,0 +1,32 @@
+{
+  "round_3_score": 9.1,
+  "round_4_score": 9.2,
+  "verdict": "accepted",
+  "fixed": [
+    "Dedicated pytest coverage for df.close.shift(periods=-1) was added and passed.",
+    "Look-ahead inspected paths are persisted into risk_reviews.flags when issues or warnings exist.",
+    "FinceptTerminal engine registry status now uses scaffold_only, aligned with ALLOWED_ENGINE_STATUSES."
+  ],
+  "partially_fixed": [],
+  "not_fixed": [],
+  "regressions": [],
+  "critical_issues": [],
+  "high_issues": [],
+  "medium_issues": [],
+  "low_issues": [
+    "score_strategies.py output can be noisy when the local database contains accumulated historical runs; not a Round 4 regression."
+  ],
+  "planned_future_work": [
+    "OpenBB fuller research/data ingestion.",
+    "Qlib factor and ML experiment workflows.",
+    "LEAN portfolio/equity/ETF backtesting integration.",
+    "Hummingbot paper/scanner lab hardening.",
+    "NautilusTrader event-driven simulation adapter.",
+    "FinceptTerminal real terminal-style analytics/UI shell."
+  ],
+  "recommended_next_steps": [
+    "No required Round 4 remediation remains.",
+    "Optionally add latest-run filtering or clean-demo mode to score_strategies.py.",
+    "Continue planned future engine integrations without enabling live trading."
+  ]
+}

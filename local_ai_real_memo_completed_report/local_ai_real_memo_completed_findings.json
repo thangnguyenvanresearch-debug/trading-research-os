@@ -1,0 +1,25 @@
+{
+  "ollama_version": "0.30.8",
+  "ollama_cli_available_in_codex_path": false,
+  "ollama_available": true,
+  "model_used": "qwen2.5:3b",
+  "model_present": true,
+  "real_local_memo_generated": true,
+  "memo_id": "memo_afcc82129ce5",
+  "memo_status": "completed",
+  "response_len": 2021,
+  "prompt_len": 2621,
+  "report_path": "reports/local_ai/memo_afcc82129ce5_market_review.md",
+  "compile_passed": true,
+  "dashboard_compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 66,
+  "dashboard_checked": true,
+  "dashboard_http_status": 200,
+  "visual_dashboard_verified": false,
+  "safety_issues": [],
+  "remaining_issues": [
+    "ollama CLI is not available in the Codex PowerShell PATH, but the Ollama HTTP service is available.",
+    "Visual dashboard page inspection was not automated; HTTP smoke passed."
+  ]
+}

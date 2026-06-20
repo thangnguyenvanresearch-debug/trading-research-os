@@ -1,0 +1,35 @@
+{
+  "verdict": "accepted_with_minor_followups",
+  "score": 8.9,
+  "lean_cli_installed": true,
+  "lean_version": "1.0.225",
+  "docker_cli_available": true,
+  "docker_daemon_available": false,
+  "executable_backtest_verified": false,
+  "executable_run_id": "lean_bt_f4d0947fa6ef",
+  "executable_run_status": "failed_timeout",
+  "skip_run_passed": true,
+  "skip_run_id": "lean_bt_3f8ecb692783",
+  "tests": "passed",
+  "test_count": 104,
+  "metrics_invented": false,
+  "metrics_count": 0,
+  "dashboard_http_checked": true,
+  "dashboard_running": false,
+  "safety_issues": [],
+  "critical_issues": [],
+  "high_issues": [],
+  "medium_issues": [],
+  "low_issues": [
+    "Executable LEAN backtest remains unverified because the last executable run timed out after 900 seconds.",
+    "Docker daemon was not reachable during this audit.",
+    "get_lean_status reports docker_available based on Docker CLI presence, not daemon availability.",
+    "Dashboard visual inspection was not verified because Streamlit was not running."
+  ],
+  "recommended_next_steps": [
+    "Checkpoint the current safe LEAN research-only patch.",
+    "Move to Qlib integration as planned.",
+    "Handle executable LEAN Docker/runtime diagnostics in a separate bounded phase.",
+    "Split Docker CLI availability from Docker daemon availability in LEAN status diagnostics."
+  ]
+}

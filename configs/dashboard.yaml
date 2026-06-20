@@ -1,0 +1,16 @@
+dashboard:
+  title: Multi-Brain AI Trading Research OS
+  default_symbol: BTC/USDT
+  default_timeframe: 1h
+  show_live_trading_controls: false
+  pages:
+    - Market Cockpit
+    - Strategy Factory
+    - Backtest Leaderboard
+    - Risk Gate
+    - Crypto Freqtrade
+    - Equity LEAN + Qlib
+    - Market Making Lab
+    - Arbitrage Scanner
+    - Nautilus Future Engine
+

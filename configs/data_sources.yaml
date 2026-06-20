@@ -1,0 +1,24 @@
+openbb:
+  enabled: false
+  role: market_data_and_context
+  output_dir: data/openbb
+freqtrade:
+  enabled: true
+  user_data_dir: data/freqtrade
+  exchange: binance
+  trading_mode: spot
+  dry_run: true
+lean:
+  enabled: false
+  workspace: data/lean
+qlib:
+  enabled: false
+  provider_uri: data/qlib
+hummingbot:
+  enabled: false
+  paper_only: true
+  output_dir: data/hummingbot
+nautilus:
+  enabled: false
+  output_dir: data/nautilus
+

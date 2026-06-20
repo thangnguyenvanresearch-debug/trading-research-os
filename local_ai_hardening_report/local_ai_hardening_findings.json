@@ -1,0 +1,28 @@
+{
+  "files_changed": [
+    "src/ai/local_ai_client.py",
+    "src/ai/research_engine.py",
+    "src/dashboard/pages/12_local_ai_research.py",
+    "tests/test_local_ai_client.py",
+    "tests/test_research_engine.py",
+    "local_ai_hardening_report/local_ai_hardening_summary.md",
+    "local_ai_hardening_report/local_ai_hardening_details.md",
+    "local_ai_hardening_report/local_ai_hardening_findings.json"
+  ],
+  "compile_passed": true,
+  "dashboard_compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 66,
+  "ollama_available": false,
+  "real_local_memo_generated": false,
+  "memo_id": "memo_ce24bd4ef54c",
+  "memo_status": "failed",
+  "memo_report_path": "reports/local_ai/memo_ce24bd4ef54c_market_review.md",
+  "safety_issues": [],
+  "remaining_issues": [],
+  "recommended_next_steps": [
+    "Start Ollama locally before attempting real generation.",
+    "Run: ollama pull qwen2.5:7b",
+    "Run: python scripts/run_local_ai_research.py --symbols AAPL MSFT --provider yfinance --interval 1d --task-type market_review"
+  ]
+}

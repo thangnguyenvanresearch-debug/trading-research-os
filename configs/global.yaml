@@ -1,0 +1,23 @@
+project_name: trading-research-os
+mode: research
+database_path: database/trading_os.duckdb
+default_asset_class: crypto
+default_timeframe: 1h
+default_pairs:
+  - BTC/USDT
+  - ETH/USDT
+  - SOL/USDT
+runtime_paths:
+  generated_specs: data/generated/specs
+  generated_freqtrade_strategies: data/generated/freqtrade_strategies
+  freqtrade_reports: reports/freqtrade
+safety:
+  live_trading_enabled: false
+  real_orders_enabled: false
+  leverage_enabled: false
+  futures_enabled: false
+  allowed_permissions:
+    - REJECTED
+    - WATCHLIST
+    - PAPER_ONLY
+    - APPROVED_FOR_DRY_RUN

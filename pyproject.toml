@@ -1,0 +1,31 @@
+[project]
+name = "trading-research-os"
+version = "0.1.0"
+description = "Local-first multi-brain AI trading research OS for backtesting, paper trading, and strategy validation."
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.0",
+  "numpy>=1.24",
+  "PyYAML>=6.0",
+  "streamlit>=1.30",
+  "plotly>=5.0",
+]
+
+[project.optional-dependencies]
+database = [
+  "duckdb>=0.10",
+]
+engines = [
+  "openbb",
+  "qlib",
+]
+dev = [
+  "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100

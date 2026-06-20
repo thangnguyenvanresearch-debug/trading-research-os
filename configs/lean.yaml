@@ -1,0 +1,21 @@
+enabled: true
+engine: lean
+mode: research_only
+allow_live_trading: false
+allow_brokerage_credentials: false
+allow_quantconnect_cloud: false
+allow_real_orders: false
+allow_futures: false
+allow_leverage: false
+default_symbols:
+  - AAPL
+  - MSFT
+provider: yfinance
+interval: 1d
+start_date: "2022-01-01"
+cash: 100000
+benchmark: SPY
+data_source: openbb_local
+output_dir: data/generated/lean
+reports_dir: reports/lean
+safe_mode: true

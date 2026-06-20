@@ -1,0 +1,29 @@
+{
+  "files_changed": [
+    "src/dashboard/control_center.py",
+    "src/dashboard/pages/00_research_control_center.py",
+    "scripts/report_control_center_status.py",
+    "tests/test_control_center.py",
+    "README.md"
+  ],
+  "lean_wording_fixed": true,
+  "lean_status": "executable_failed_timeout",
+  "lean_cli_detected": true,
+  "lean_skeleton_available": true,
+  "lean_executable_verified": false,
+  "daily_wording_fixed": true,
+  "daily_status_key": "latest_daily_run",
+  "scheduler_state": "not_verified",
+  "warning_error_truncation_added": true,
+  "readme_updated": true,
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 132,
+  "cli_report_passed": true,
+  "safety_issues": [],
+  "remaining_issues": [
+    "LEAN executable backtest remains unverified until Docker/runtime execution succeeds.",
+    "Qlib true trainer remains future work while Qlib is not installed.",
+    "Windows Task Scheduler state is not queried by the Control Center page."
+  ]
+}

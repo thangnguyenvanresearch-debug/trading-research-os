@@ -1,0 +1,36 @@
+{
+  "verdict": "accepted_with_minor_followups",
+  "score": 8.8,
+  "lean_cli_available": false,
+  "docker_available": true,
+  "skip_run_passed": true,
+  "unavailable_run_passed": true,
+  "local_data_exported": true,
+  "skeleton_created": true,
+  "tests": "passed",
+  "test_count": 102,
+  "dashboard_http_status": 200,
+  "latest_skip_run_id": "lean_bt_f2d6b4617f0d",
+  "latest_unavailable_run_id": "lean_bt_a0e709b0ac00",
+  "exported_rows": {
+    "AAPL": 1115,
+    "MSFT": 1115
+  },
+  "duplicate_timestamps_in_export": {
+    "AAPL": 0,
+    "MSFT": 0
+  },
+  "safety_issues": [],
+  "critical_issues": [],
+  "high_issues": [],
+  "medium_issues": [],
+  "low_issues": [
+    "Executable LEAN backtest is not verified because LEAN CLI is unavailable.",
+    "Generated skeleton uses LEAN SetHoldings inside a clearly labeled local research/backtest skeleton; re-audit after LEAN CLI installation."
+  ],
+  "recommended_next_steps": [
+    "Install LEAN CLI locally if executable LEAN backtests are required.",
+    "Run the normal LEAN wrapper again and audit actual result files/metrics.",
+    "Keep QuantConnect cloud login and brokerage credentials disabled."
+  ]
+}

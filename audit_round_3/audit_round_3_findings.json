@@ -1,0 +1,48 @@
+{
+  "round_2_score": 8.8,
+  "round_3_score": 9.1,
+  "verdict": "accepted",
+  "fixed": [
+    "AST-based static look-ahead analysis added in src/core/validation.py",
+    "Risk gate consumes substring and AST look-ahead findings",
+    "SQLite fallback warning added and tested",
+    "Standard optional engine status objects added",
+    "Dashboard displays honest optional engine diagnostics",
+    "README documents Round 3 hardening",
+    "Safe fallback workflow still passes",
+    "Test suite passes with 27 tests"
+  ],
+  "partially_fixed": [
+    "Risk gate collects inspected_paths but does not persist them into risk_reviews.flags",
+    "FinceptTerminal is honestly documented as mentioned/future but lacks a standardized code-level status helper"
+  ],
+  "not_fixed": [
+    "Optional engines outside Freqtrade remain scaffold/future integrations by design",
+    "AST look-ahead detection remains heuristic rather than full data-flow analysis"
+  ],
+  "regressions": [],
+  "critical_issues": [],
+  "high_issues": [],
+  "medium_issues": [],
+  "low_issues": [
+    {
+      "path": "tests/test_no_lookahead.py",
+      "issue": "No dedicated pytest case for shift(periods=-1), although ad-hoc validation confirms detection works."
+    },
+    {
+      "path": "src/risk_brain/risk_gate.py",
+      "issue": "inspected_paths are returned by _lookahead_review but not persisted into risk review flags."
+    },
+    {
+      "path": "configs/engine_registry.yaml",
+      "issue": "FinceptTerminal uses status mentioned_only, which is honest but not in code-level ALLOWED_ENGINE_STATUSES."
+    }
+  ],
+  "recommended_next_steps": [
+    "Add pytest coverage for shift(periods=-1).",
+    "Persist inspected look-ahead paths into risk review flags when issues or warnings exist.",
+    "Optionally align FinceptTerminal status taxonomy with code-level allowed statuses.",
+    "Keep optional engine production integrations for planned future phases, not a remediation hotfix."
+  ]
+}
+

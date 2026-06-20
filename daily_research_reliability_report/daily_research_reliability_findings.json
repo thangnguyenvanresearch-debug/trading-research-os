@@ -1,0 +1,23 @@
+{
+  "dedupe_enabled": true,
+  "rows_skipped_duplicate_supported": true,
+  "local_ai_retry_enabled": true,
+  "compact_retry_enabled": true,
+  "venv_tests_passed": true,
+  "first_run_status": "partial_failed",
+  "second_run_status": "partial_failed",
+  "first_run_id": "daily_512b40bc3058",
+  "second_run_id": "daily_ba8422817abb",
+  "aapl_rows": 2230,
+  "aapl_distinct_timestamps": 1115,
+  "msft_rows": 2230,
+  "msft_distinct_timestamps": 1115,
+  "latest_memo_status": "failed",
+  "latest_memo_response_len": 0,
+  "dashboard_checked": true,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Existing OpenBB duplicate rows remain from previous runs; dry-run cleanup script is available, but --apply was not run.",
+    "Ollama was unavailable at localhost:11434 during validation reruns, so latest Local AI memos failed safely."
+  ]
+}

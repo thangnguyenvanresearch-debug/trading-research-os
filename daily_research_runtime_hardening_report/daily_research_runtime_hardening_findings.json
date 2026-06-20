@@ -1,0 +1,28 @@
+{
+  "venv_runner_added": true,
+  "scheduler_helper_updated": true,
+  "uses_venv_openbb": true,
+  "openbb_installed_in_runtime": true,
+  "fresh_ingestion_attempted": true,
+  "fresh_ingestion_status": "succeeded",
+  "fresh_ingestion_rows_inserted": 2230,
+  "fresh_ingestion_rows_failed": 0,
+  "real_run_status": "partial_failed",
+  "run_id": "daily_8f479fa817e1",
+  "memo_id": "memo_a7179ad2aa04",
+  "analytics_report_path": "reports/daily_research/daily_8f479fa817e1/daily_research_summary.md",
+  "local_ai_report_path": "reports/local_ai/memo_a7179ad2aa04_daily_research_note.md",
+  "compile_passed": true,
+  "venv_compile_passed": true,
+  "pytest_passed": true,
+  "venv_pytest_passed": true,
+  "test_count": 79,
+  "dashboard_checked": true,
+  "dashboard_http_status": 200,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Ollama disconnected during Local AI generation, so the venv daily run ended partial_failed even though OpenBB ingestion succeeded.",
+    "OpenBB ingestion currently appends duplicate historical rows across repeated runs.",
+    "Visual dashboard inspection was not automated."
+  ]
+}

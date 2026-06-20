@@ -1,0 +1,30 @@
+enabled: true
+default_provider_priority:
+  equity:
+    - yfinance
+    - fmp
+    - intrinio
+  crypto:
+    - yfinance
+  etf:
+    - yfinance
+  macro:
+    - fred
+safe_mode: true
+allow_credentials: false
+write_to_database: true
+write_to_parquet: true
+default_universe:
+  equities:
+    - AAPL
+    - MSFT
+    - NVDA
+    - FPT.VN
+  etfs:
+    - SPY
+    - QQQ
+  crypto:
+    - BTC-USD
+    - ETH-USD
+default_start_date: "2022-01-01"
+default_interval: "1d"

@@ -1,0 +1,19 @@
+{
+  "task_name": "TradingResearchOSDailyResearch",
+  "registered": true,
+  "schedule": "daily 08:30",
+  "command_uses_venv_runner": true,
+  "working_directory": "D:\\AI2\\QuantGit\\trading-research-os",
+  "task_state": "Ready",
+  "next_run_time": "2026-06-15 08:30:00",
+  "manual_run_performed": true,
+  "manual_run_status": "completed",
+  "manual_run_last_task_result": 0,
+  "latest_run_id": "daily_ccd5abf71f95",
+  "latest_run_status": "completed_with_warnings",
+  "latest_memo_id": "memo_527fb16be9b4",
+  "latest_memo_status": "completed",
+  "latest_memo_response_len": 1947,
+  "safety_issues": [],
+  "remaining_issues": []
+}

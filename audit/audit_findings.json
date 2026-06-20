@@ -1,0 +1,100 @@
+{
+  "overall_score": 5.8,
+  "sections": [
+    {"name": "Architecture", "score": 6.5, "status": "partially implemented"},
+    {"name": "Repo leverage", "score": 4.0, "status": "partially implemented"},
+    {"name": "Data layer", "score": 6.0, "status": "partially implemented"},
+    {"name": "Strategy spec safety", "score": 7.0, "status": "partially implemented"},
+    {"name": "Backtesting", "score": 4.5, "status": "partially implemented"},
+    {"name": "Risk gate", "score": 5.5, "status": "partially implemented"},
+    {"name": "Decision engine", "score": 5.0, "status": "partially implemented"},
+    {"name": "Dashboard", "score": 6.0, "status": "partially implemented"},
+    {"name": "Security", "score": 7.0, "status": "partially implemented"},
+    {"name": "Code quality", "score": 5.5, "status": "partially implemented"},
+    {"name": "Testing", "score": 4.5, "status": "partially implemented"},
+    {"name": "Documentation", "score": 7.0, "status": "partially implemented"},
+    {"name": "Retail-user practicality", "score": 5.5, "status": "partially implemented"}
+  ],
+  "critical_issues": [],
+  "high_issues": [
+    {
+      "path": "src/freqtrade_brain/batch_backtest_runner.py",
+      "issue": "Freqtrade CLI backtest path does not export or parse real Freqtrade results and returns empty metrics after CLI completion."
+    },
+    {
+      "path": "src/data_brain/freqtrade_data_adapter.py",
+      "issue": "Data download path always generates synthetic sample data after optional Freqtrade download; actual downloaded Freqtrade files are not imported."
+    },
+    {
+      "path": "src/risk_brain/risk_gate.py",
+      "issue": "Risk gate does not implement dry-run divergence, runtime look-ahead review, archived status, or approved_for_dry_run promotion."
+    },
+    {
+      "path": "src/decision_brain/decision_engine.py",
+      "issue": "Decision output hardcodes symbol BTC/USDT and deletes all historical decisions on each build."
+    },
+    {
+      "path": ".gitignore",
+      "issue": "No .gitignore found while generated database/data/report/cache artifacts exist in the workspace."
+    }
+  ],
+  "medium_issues": [
+    {
+      "path": "src/ai_strategy_brain/strategy_spec_validator.py",
+      "issue": "Spec validator is whitelist-based but shallow; it does not enforce numeric bounds for stop loss/take profit or deeply validate condition object types."
+    },
+    {
+      "path": "src/core/validation.py",
+      "issue": "Look-ahead detection is simple substring matching and will miss many future-data patterns."
+    },
+    {
+      "path": "src/dashboard/pages",
+      "issue": "Dashboard pages exist but several are simple placeholders and do not show full readiness or failure diagnostics."
+    },
+    {
+      "path": "src/lean_brain, src/qlib_brain, src/nautilus_brain",
+      "issue": "Most non-Freqtrade engines are scaffold only."
+    },
+    {
+      "path": "tests",
+      "issue": "Tests cover basic units only; missing integration, parser, optional engine, safe defaults, and dashboard smoke tests."
+    }
+  ],
+  "low_issues": [
+    {
+      "path": "src/freqtrade_brain/freqtrade_strategy_converter.py",
+      "issue": "Generated strategies import numpy but do not use it."
+    },
+    {
+      "path": "src/core/database.py",
+      "issue": "insert_dict builds SQL with table names from caller; current callers are internal, but this should remain constrained."
+    },
+    {
+      "path": "src/feature_brain/feature_pipeline.py",
+      "issue": "Formatting/indentation in store_regimes row tuple is uneven."
+    }
+  ],
+  "missing_features": [
+    "Real Freqtrade exported-result parser integration in batch runner",
+    "Actual Freqtrade downloaded data import",
+    "LEAN backtest runner and result parser beyond placeholder",
+    "Qlib dataset conversion and experiment runner beyond placeholder",
+    "OpenBB data ingestion into database",
+    "FinceptTerminal analytics/UI module beyond mention/config role",
+    "Dry-run log ingestion and backtest-vs-dry-run divergence review",
+    "Archived status workflow",
+    "Approved_for_dry_run promotion rules",
+    "Best/worst pair metrics",
+    "Separate fee and slippage adjusted metrics",
+    "Dashboard engine missing-warning panels with actionable detail"
+  ],
+  "recommended_next_steps": [
+    "Make Freqtrade CLI path real: use userdir/config/export filename, parse exported JSON, store standardized metrics.",
+    "Change data adapter to import actual Freqtrade OHLCV files when CLI download is used, and only synthesize data under explicit --sample flag.",
+    "Strengthen risk gate with dry-run divergence, look-ahead metadata checks, archived workflow, and approved_for_dry_run criteria.",
+    "Fix decision engine to emit per-symbol decisions and preserve historical decisions.",
+    "Add .gitignore for data, database, reports, __pycache__, .pytest_cache, .env.",
+    "Add integration tests for full v1 pipeline on temporary database and generated temp dirs."
+  ]
+}
+

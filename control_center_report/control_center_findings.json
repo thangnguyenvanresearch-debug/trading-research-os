@@ -1,0 +1,44 @@
+{
+  "control_center_added": true,
+  "dashboard_page": "src/dashboard/pages/00_research_control_center.py",
+  "helper_module": "src/dashboard/control_center.py",
+  "cli_report_added": true,
+  "cli_report_path": "D:\\AI2\\QuantGit\\trading-research-os\\reports\\control_center\\control_center_status_2026-06-19T193840_0000.md",
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 129,
+  "latest_engine_statuses": {
+    "openbb": {
+      "status": "has_data",
+      "rows": 2230
+    },
+    "local_ai": {
+      "status": "available",
+      "model": "qwen2.5:3b"
+    },
+    "daily_scheduler": {
+      "status": "completed_with_warnings"
+    },
+    "lean": {
+      "status": "ready",
+      "cli": true,
+      "safe_for_live": false
+    },
+    "qlib": {
+      "status": "missing",
+      "available": false,
+      "safe_for_live": false
+    },
+    "safety": {
+      "status": "safe"
+    }
+  },
+  "dashboard_http_checked": true,
+  "dashboard_running": false,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Streamlit was not running during HTTP check, so visual inspection remains manual.",
+    "Qlib package remains missing; true Qlib execution is not verified.",
+    "LEAN executable backtest remains future Docker/runtime diagnostics."
+  ]
+}

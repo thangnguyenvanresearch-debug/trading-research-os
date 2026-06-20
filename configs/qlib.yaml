@@ -1,0 +1,27 @@
+enabled: true
+engine: qlib
+mode: research_only
+safe_for_live: false
+allow_live_trading: false
+allow_real_orders: false
+allow_brokerage_credentials: false
+allow_cloud_credentials: false
+allow_futures: false
+allow_leverage: false
+provider: yfinance
+data_source: openbb_local
+default_symbols:
+  - AAPL
+  - MSFT
+interval: 1d
+start_date: "2022-01-01"
+target_horizon_days: 5
+features:
+  - close_return_1d
+  - close_return_5d
+  - volume_zscore_20d
+  - volatility_20d
+  - momentum_20d
+output_dir: data/generated/qlib
+reports_dir: reports/qlib
+safe_mode: true

@@ -1,0 +1,44 @@
+enabled: true
+default_symbols:
+  - AAPL
+  - MSFT
+provider: yfinance
+asset_class: equity
+interval: 1d
+start_date: "2022-01-01"
+task_type: daily_research_note
+local_ai:
+  enabled: true
+  model: qwen2.5:3b
+  base_url: http://localhost:11434
+  timeout_seconds: 180
+  max_context_chars: 12000
+  retry_attempts: 2
+  retry_backoff_seconds: 3
+include_sections:
+  openbb: true
+  analytics: true
+  backtests: true
+  risk: true
+  decisions: true
+lean:
+  enabled: false
+  strategy_name: equal_weight_demo
+  run_backtest: false
+qlib:
+  enabled: false
+  experiment_name: qlib_demo
+  run_experiment: false
+outputs:
+  save_markdown: true
+  save_csv_summary: true
+  save_json_summary: true
+safe_mode:
+  research_only: true
+  allow_live_trading: false
+  allow_real_orders: false
+  allow_futures: false
+  allow_leverage: false
+  allow_external_ai_api: false
+  allow_chatgpt_oauth: false
+  allow_browser_automation: false
