@@ -1,0 +1,32 @@
+{
+  "verdict": "accepted_with_minor_followups",
+  "score": 9.0,
+  "git_repo_valid": true,
+  "tag_exists": true,
+  "tag_name": "v0.1.0-research-only-mvp",
+  "tag_commit": "4ff13044347b55f3d1093b1326009c7c9ee2aefe",
+  "worktree_clean": true,
+  "tests": "passed",
+  "test_count": 137,
+  "health_check_passed": true,
+  "safety_unsafe_count": 0,
+  "docs_accurate": true,
+  "repo_hygiene_ok": true,
+  "dashboard_verified": true,
+  "dashboard_visual_verified": false,
+  "scheduler_verified": false,
+  "safe_to_push_private_repo": true,
+  "safety_issues": [],
+  "accuracy_issues": [],
+  "repo_hygiene_issues": [
+    ".venv-openbb, .ruff_cache and runtime log excludes are local-only and not committed in .gitignore."
+  ],
+  "remaining_issues": [
+    "Windows scheduled task TradingResearchOSDailyResearch was not found in the current environment.",
+    "Ollama/Local AI service is currently unavailable; start it before demo.",
+    "Dashboard HTTP and source checks passed, but visual browser inspection remains manual.",
+    "LEAN executable backtest remains unverified.",
+    "Qlib package/trainer remains unavailable.",
+    "DuckDB is absent; SQLite fallback is active."
+  ]
+}

@@ -24,3 +24,11 @@ htmlcov/
 .vscode/
 .idea/
 
+# --- Portable hygiene (was local-only in .git/info/exclude) ---
+.venv-openbb/
+.ruff_cache/
+*.log
+streamlit.out.log
+streamlit.err.log
+*.tmp
+*.bak

@@ -1,0 +1,44 @@
+{
+  "gitignore_updated": true,
+  "venv_ignored": true,
+  "ruff_cache_ignored": true,
+  "logs_ignored": true,
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 137,
+  "health_check_passed": true,
+  "safety_issues": [],
+  "remaining_issues": [],
+  "meta": {
+    "date": "2026-06-20",
+    "tag": "v0.1.0-research-only-mvp",
+    "branch": "master",
+    "safe_to_push_private_repo": true,
+    "gitignore_entries_added": [
+      ".venv-openbb/",
+      ".ruff_cache/",
+      "*.log",
+      "streamlit.out.log",
+      "streamlit.err.log",
+      "*.tmp",
+      "*.bak"
+    ],
+    "check_ignore_results": {
+      ".venv-openbb/Scripts/python.exe": ".gitignore:28:.venv-openbb/",
+      ".ruff_cache": ".gitignore:29:.ruff_cache/",
+      "streamlit.out.log": ".gitignore:31:streamlit.out.log"
+    },
+    "compile_src_scripts": "passed",
+    "compile_src_dashboard": "passed",
+    "pytest_summary": "137 passed in 72.27s",
+    "health_check_summary": {
+      "db_reachable": true,
+      "openbb_total_rows": 2230,
+      "latest_daily_run": "daily_ccd5abf71f95 (completed_with_warnings)",
+      "latest_ai_memo": "memo_527fb16be9b4 (completed)",
+      "latest_lean_run": "lean_bt_3f8ecb692783 (skeleton_created)",
+      "latest_qlib_run": "qlib_run_045090f920b8 (unavailable)",
+      "safety_unsafe_count": 0
+    }
+  }
+}
