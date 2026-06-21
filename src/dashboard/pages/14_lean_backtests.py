@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
 
 from core.database import fetch_dataframe, initialize_database  # noqa: E402
 from dashboard.components.tables import dataframe_or_message  # noqa: E402
+from dashboard.components.ui import caveat_box, compact_dataframe, hero, metric_card, section_header, setup_page  # noqa: E402
 from lean_brain.lean_adapter import get_lean_status  # noqa: E402
 from lean_brain.lean_runner import run_lean_backtest  # noqa: E402
 
@@ -25,21 +26,24 @@ def _show_json(label: str, value) -> None:
 
 
 initialize_database()
-
-st.title("LEAN Backtests")
-st.caption("Optional research-only local LEAN integration. No cloud login, brokerage credentials, live mode, or real orders.")
+setup_page()
+hero(
+    "LEAN Backtests",
+    "Build local research data and project skeletons for the optional LEAN CLI.",
+    badges=[("Research only", "success"), ("CLI optional", "neutral"), ("Executable unverified", "warning")],
+)
 
 status = get_lean_status()
 cols = st.columns(4)
-cols[0].metric("LEAN CLI", "available" if status["lean_cli_available"] else "missing")
-cols[1].metric("Docker", "available" if status["docker_available"] else "missing")
-cols[2].metric("Mode", status["mode"])
-cols[3].metric("Live execution allowed", str(status["safe_for_live"]))
+with cols[0]: metric_card("LEAN CLI", "Available" if status["lean_cli_available"] else "Missing", ("Detected locally", "success" if status["lean_cli_available"] else "warning"))
+with cols[1]: metric_card("Docker", "Available" if status["docker_available"] else "Missing", ("Runtime", "neutral"))
+with cols[2]: metric_card("Mode", status["mode"], ("Research only", "info"))
+with cols[3]: metric_card("Live Execution", "Disabled", ("safe_for_live=False", "success"))
 if status["warnings"]:
     st.warning("; ".join(status["warnings"]))
 if status["errors"]:
     st.error("; ".join(status["errors"]))
-st.info("LEAN data bridge and skeleton are available; executable local backtesting remains unverified after timeout.")
+caveat_box("LEAN data bridge and skeleton are available. Executable local backtesting remains unverified after a Docker/runtime timeout.", "warning")
 
 with st.form("lean_research_form"):
     symbols_text = st.text_input("Symbols", value="AAPL MSFT")
@@ -76,16 +80,16 @@ runs = fetch_dataframe(
     LIMIT 25
     """
 )
-st.subheader("Latest LEAN Research Runs")
+section_header("Latest LEAN Research Runs")
 run_cols = st.columns(2)
-run_cols[0].metric("Recorded runs", len(runs))
-run_cols[1].metric("Latest status", str(runs.iloc[0]["status"]) if not runs.empty else "none")
+with run_cols[0]: metric_card("Recorded Runs", len(runs), ("Local history", "neutral"))
+with run_cols[1]: metric_card("Latest Status", str(runs.iloc[0]["status"]) if not runs.empty else "none", ("Not proof of execution", "warning"))
 with st.expander("LEAN run history", expanded=False):
     dataframe_or_message(runs, "No LEAN research runs recorded yet.", height=320)
 
 if not runs.empty:
     latest = runs.iloc[0]
-    st.subheader("Latest Run Details")
+    section_header("Latest Run Details")
     st.write(
         {
             "run_id": latest["run_id"],

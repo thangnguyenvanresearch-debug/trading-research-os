@@ -10,11 +10,16 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from core.database import fetch_dataframe, initialize_database  # noqa: E402
+from dashboard.components.ui import caveat_box, compact_dataframe, hero, metric_card, setup_page  # noqa: E402
 
 
 initialize_database()
-st.title("Crypto Freqtrade")
-st.caption("Spot-only research strategies. Dry-run config generation is available but disabled by default.")
+setup_page()
+hero(
+    "Crypto Freqtrade",
+    "Spot-only strategy research and backtest provenance. Dry-run configuration remains disabled by default.",
+    badges=[("Spot research", "info"), ("No leverage", "success"), ("No orders", "success")],
+)
 strategies = fetch_dataframe("SELECT * FROM generated_strategies WHERE engine_target='freqtrade'")
 metrics = fetch_dataframe("SELECT * FROM backtest_metrics")
 provenance = fetch_dataframe(
@@ -27,14 +32,17 @@ provenance = fetch_dataframe(
 )
 
 summary_cols = st.columns(3)
-summary_cols[0].metric("Generated strategies", len(strategies))
-summary_cols[1].metric("Backtest metric rows", len(metrics))
-summary_cols[2].metric("Recorded engine runs", len(provenance))
+with summary_cols[0]:
+    metric_card("Generated Strategies", len(strategies), ("Research artifacts", "neutral"))
+with summary_cols[1]:
+    metric_card("Backtest Metrics", len(metrics), ("Simulation rows", "info"))
+with summary_cols[2]:
+    metric_card("Engine Runs", len(provenance), ("Provenance recorded", "success"))
 
 with st.expander("Generated Strategies", expanded=True):
-    st.dataframe(strategies, use_container_width=True, hide_index=True, height=320)
+    compact_dataframe(strategies, height=320)
 with st.expander("Pair-level Performance", expanded=False):
-    st.dataframe(metrics, use_container_width=True, hide_index=True, height=320)
+    compact_dataframe(metrics, height=320)
 with st.expander("Engine Provenance", expanded=False):
-    st.dataframe(provenance, use_container_width=True, hide_index=True, height=320)
-st.info("`internal_research_fallback` is a demo/research fallback, not a real Freqtrade CLI backtest.")
+    compact_dataframe(provenance, height=320)
+caveat_box("internal_research_fallback is a demo research fallback, not a real Freqtrade CLI backtest or an execution path.", "warning")

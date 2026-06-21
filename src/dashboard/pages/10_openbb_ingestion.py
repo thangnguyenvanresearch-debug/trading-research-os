@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -17,13 +18,18 @@ from analytics.openbb_analytics import (  # noqa: E402
 )
 from core.database import fetch_dataframe, initialize_database  # noqa: E402
 from dashboard.components.tables import dataframe_or_message  # noqa: E402
+from dashboard.components.ui import caveat_box, compact_dataframe, hero, metric_card, section_header, setup_page  # noqa: E402
 from data_brain.openbb_adapter import get_openbb_status  # noqa: E402
 
 
 initialize_database()
+setup_page()
 
-st.title("OpenBB Ingestion")
-st.caption("Research/data context only. No live trading, no broker configs, and no order placement.")
+hero(
+    "OpenBB Local Data",
+    "Read-only analytics over locally ingested market data. Dashboard load never fetches provider data.",
+    badges=[("Local database", "info"), ("Read-only page", "success"), ("No credentials", "neutral")],
+)
 
 status = get_openbb_status()
 runs = fetch_dataframe(
@@ -41,50 +47,43 @@ summary = compute_openbb_return_summary(prices)
 quality = compute_openbb_data_quality(prices)
 comparison = compute_openbb_pair_comparison(prices)
 
-st.subheader("OpenBB Status")
 status_cols = st.columns(4)
-status_cols[0].metric("Installed", str(status["installed"]))
-status_cols[1].metric("Status", str(status["status"]))
-status_cols[2].metric("Live execution allowed", str(status["safe_for_live"]))
-status_cols[3].metric("Latest Run", str(latest_run.get("run_id", "none")))
-st.dataframe([status], use_container_width=True, hide_index=True)
+with status_cols[0]:
+    metric_card("OpenBB Package", "Installed" if status["installed"] else "Missing", (status["status"], "success" if status["installed"] else "warning"))
+with status_cols[1]:
+    metric_card("Local Rows", len(prices), ("Database", "info"))
+with status_cols[2]:
+    metric_card("Latest Run", latest_run.get("status", "none"), (latest_run.get("run_id", "No run"), "neutral"))
+with status_cols[3]:
+    metric_card("Live Execution", "Disabled", ("Research only", "success"))
 
-st.subheader("Latest Ingestion Runs")
-dataframe_or_message(runs, "No OpenBB ingestion runs recorded yet. Use scripts/ingest_openbb_data.py.")
-
-st.subheader("Market Data Summary")
-dataframe_or_message(summary, "No OpenBB market data available.")
+section_header("Market Overview", "Descriptive return, drawdown, volatility, and coverage statistics")
+compact_dataframe(summary, height=260, empty_message="No OpenBB market data available.")
 
 quality_left, quality_right = st.columns([1, 2])
 with quality_left:
-    st.subheader("Data Quality")
-    st.metric("Duplicate Timestamps", quality["duplicate_timestamp_count"])
-    st.metric("Missing Close", quality["missing_close_count"])
-    st.metric("Non-Positive Prices", quality["non_positive_prices"])
-    st.metric("High Below Low", quality["high_below_low_count"])
+    section_header("Data Quality")
+    quality_cards = st.columns(2)
+    with quality_cards[0]:
+        metric_card("Duplicates", quality["duplicate_timestamp_count"], ("Clean" if quality["duplicate_timestamp_count"] == 0 else "Review", "success" if quality["duplicate_timestamp_count"] == 0 else "warning"))
+        metric_card("Missing Close", quality["missing_close_count"], ("Quality", "neutral"))
+    with quality_cards[1]:
+        metric_card("Non-Positive", quality["non_positive_prices"], ("Quality", "neutral"))
+        metric_card("High Below Low", quality["high_below_low_count"], ("Quality", "neutral"))
 with quality_right:
-    st.subheader("Provider / Source Counts")
-    dataframe_or_message(quality["provider_source_summary"], "No provider/source counts available.")
+    section_header("Normalized Close Index", "Base 100 comparison from local data")
+    normalized = comparison["normalized_index"]
+    if normalized.empty:
+        st.info("No normalized comparison available.")
+    else:
+        chart = normalized.pivot_table(index="timestamp", columns="symbol", values="normalized_close", aggfunc="last")
+        st.line_chart(chart)
 
-st.subheader("Date Coverage")
-dataframe_or_message(quality["date_coverage_by_symbol"], "No date coverage available.")
-
-st.subheader("Normalized Close Index")
-normalized = comparison["normalized_index"]
-if normalized.empty:
-    st.info("No normalized comparison available.")
-else:
-    chart = normalized.pivot_table(index="timestamp", columns="symbol", values="normalized_close", aggfunc="last")
-    st.line_chart(chart)
-
-st.subheader("Daily Return Correlation")
+section_header("Daily Return Correlation")
 correlation = comparison["correlation_matrix"]
 dataframe_or_message(correlation.reset_index().rename(columns={"index": "symbol"}), "Need at least two symbols for correlation.")
 
-left, right = st.columns(2)
-with left:
-    st.subheader("Market Data Preview")
-    market = fetch_dataframe(
+market = fetch_dataframe(
         """
         SELECT symbol, asset_class, provider, interval, timestamp, open, high, low, close, volume, retrieved_at
         FROM openbb_market_data
@@ -92,11 +91,7 @@ with left:
         LIMIT 100
         """
     )
-    dataframe_or_message(market, "No OpenBB market data available.")
-
-with right:
-    st.subheader("Macro Data Preview")
-    macro = fetch_dataframe(
+macro = fetch_dataframe(
         """
         SELECT indicator, provider, frequency, timestamp, value, retrieved_at
         FROM openbb_macro_data
@@ -104,10 +99,25 @@ with right:
         LIMIT 100
         """
     )
-    dataframe_or_message(macro, "No OpenBB macro data available.")
+with st.expander("Ingestion runs and local data details", expanded=False):
+    st.write("Latest ingestion runs")
+    compact_dataframe(runs, height=280, empty_message="No OpenBB ingestion runs recorded yet.")
+    st.write("Provider / source counts")
+    compact_dataframe(quality["provider_source_summary"], height=220, empty_message="No provider/source counts available.")
+    st.write("Date coverage")
+    compact_dataframe(quality["date_coverage_by_symbol"], height=220, empty_message="No date coverage available.")
+    st.write("Adapter status")
+    compact_dataframe(pd.DataFrame([status]), height=180)
 
-st.info(
+with st.expander("Market and macro previews", expanded=False):
+    st.write("Market data preview")
+    compact_dataframe(market, height=280, empty_message="No OpenBB market data available.")
+    st.write("Macro data preview")
+    compact_dataframe(macro, height=240, empty_message="No OpenBB macro data available.")
+
+caveat_box(
     "Run ingestion from the CLI, for example: "
     "`python scripts/ingest_openbb_data.py --symbols AAPL MSFT NVDA --asset-class equity --start-date 2022-01-01`. "
-    "This dashboard reads local database rows only."
+    "This dashboard reads local database rows only.",
+    "info",
 )

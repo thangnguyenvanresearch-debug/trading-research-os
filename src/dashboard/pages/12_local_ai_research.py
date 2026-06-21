@@ -4,6 +4,7 @@ import json
 import sys
 from pathlib import Path
 
+import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -15,6 +16,7 @@ from ai.research_engine import ALLOWED_TASKS, build_research_context, build_loca
 from core.config_loader import load_config  # noqa: E402
 from core.database import fetch_dataframe, initialize_database  # noqa: E402
 from dashboard.components.tables import dataframe_or_message  # noqa: E402
+from dashboard.components.ui import caveat_box, compact_dataframe, hero, metric_card, section_header, setup_page  # noqa: E402
 
 
 @st.cache_data(ttl=45, show_spinner=False)
@@ -39,10 +41,13 @@ def _cached_local_ai_status(
 
 
 initialize_database()
-
-st.title("Local AI Research")
-st.caption("Local-only research analysis. No OpenAI API, no ChatGPT login, no orders, and no live trading.")
-st.warning("This is local AI research, not trading advice. It does not place orders.")
+setup_page()
+hero(
+    "Local AI Research",
+    "Generate research memos with a local Ollama model using only selected local context.",
+    badges=[("Ollama local", "info"), ("No cloud API", "success"), ("No orders", "success")],
+)
+caveat_box("Local AI output is research commentary, not trading advice. It cannot place orders.", "warning")
 
 config = load_config("local_ai")
 status = _cached_local_ai_status(
@@ -54,37 +59,26 @@ status = _cached_local_ai_status(
     int(config.get("timeout_seconds", 120)),
 )
 
-st.subheader("Local AI Status")
-status_cols = st.columns(5)
-status_cols[0].metric("Provider", str(status["provider"]))
-status_cols[1].metric("Available", str(status["available"]))
-status_cols[2].metric("Model", str(status["model"]))
-status_cols[3].metric("Safe Mode", str(status["safe_mode"]))
-status_cols[4].metric("Base URL", str(status["base_url"]))
+status_cols = st.columns(4)
+with status_cols[0]:
+    metric_card("Runtime", "Available" if status["available"] else "Unavailable", (status["provider"], "success" if status["available"] else "warning"))
+with status_cols[1]:
+    metric_card("Model", status["model"], ("Local model", "info"))
+with status_cols[2]:
+    metric_card("Safe Mode", status["safe_mode"], ("Localhost enforced", "success"))
+with status_cols[3]:
+    metric_card("Endpoint", status["base_url"], ("Local only", "neutral"))
 if not status.get("available"):
-    st.error("Status: unavailable")
-    st.write(f"Reason: `{status.get('error') or 'Ollama did not answer the local status check.'}`")
-    st.markdown(
-        """
-        Start the local service in a terminal:
-
-        ```powershell
-        ollama serve
-        ```
-
-        Verify installed models:
-
-        ```powershell
-        ollama list
-        ```
-
-        Expected model: `qwen2.5:3b`
-        """
-    )
+    caveat_box(f"Local AI unavailable: {status.get('error') or 'Ollama did not answer the local status check.'}", "danger")
+    section_header("Start Local AI", "Run these commands in a separate PowerShell terminal")
+    setup_cols = st.columns(3)
+    setup_cols[0].code("ollama serve", language="powershell")
+    setup_cols[1].code("ollama list", language="powershell")
+    setup_cols[2].code("qwen2.5:3b", language="text")
 with st.expander("Local AI runtime details", expanded=False):
-    st.dataframe([status], use_container_width=True, hide_index=True, height=180)
+    compact_dataframe(pd.DataFrame([status]), height=180)
 
-st.subheader("Run Local Research")
+section_header("Run Local Research", "The run control stays disabled until the local Ollama preflight succeeds")
 with st.form("local_ai_research_form"):
     symbols_text = st.text_input("Symbols", value="AAPL MSFT")
     provider = st.text_input("Provider filter", value="yfinance")
@@ -119,7 +113,7 @@ if run_clicked:
         st.error(str(result["error"]))
     st.code(result["output_path"])
 
-st.subheader("Prompt / Context Preview")
+section_header("Prompt / Context Preview")
 context, context_markdown = build_research_context(
     symbols=symbols,
     provider=provider_filter,
@@ -137,7 +131,7 @@ with st.expander("Context JSON", expanded=False):
 with st.expander("Prompt Preview", expanded=False):
     st.code(prompt_preview, language="markdown")
 
-st.subheader("Latest AI Research Memos")
+section_header("Latest AI Research Memos", "Stored locally for review and comparison")
 memos = fetch_dataframe(
     """
     SELECT memo_id, created_at, provider, model, task_type, symbols, status, warnings_json, metadata_json
@@ -147,8 +141,11 @@ memos = fetch_dataframe(
     """
 )
 memo_cols = st.columns(2)
-memo_cols[0].metric("Stored memos", len(memos))
-memo_cols[1].metric("Latest memo status", str(memos.iloc[0]["status"]) if not memos.empty else "none")
+with memo_cols[0]:
+    metric_card("Stored Memos", len(memos), ("Local database", "neutral"))
+with memo_cols[1]:
+    latest_memo_status = str(memos.iloc[0]["status"]) if not memos.empty else "none"
+    metric_card("Latest Memo", latest_memo_status, ("Research artifact", "success" if latest_memo_status == "completed" else "warning"))
 with st.expander("Memo history", expanded=False):
     dataframe_or_message(memos, "No local AI research memos recorded yet.", height=320)
 

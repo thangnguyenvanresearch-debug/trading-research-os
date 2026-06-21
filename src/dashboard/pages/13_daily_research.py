@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 
 from core.database import fetch_dataframe, initialize_database  # noqa: E402
 from dashboard.components.tables import dataframe_or_message  # noqa: E402
+from dashboard.components.ui import caveat_box, compact_dataframe, hero, metric_card, section_header, setup_page  # noqa: E402
 from pipeline.daily_research_pipeline import run_daily_research_pipeline  # noqa: E402
 
 
@@ -43,10 +44,13 @@ def _metadata(value) -> dict:
 
 
 initialize_database()
-
-st.title("Daily Research")
-st.caption("Research-only automation. This does not place trades and is not financial advice.")
-st.warning("No OpenAI API, ChatGPT OAuth, credentials, live trading, or order controls are used here.")
+setup_page()
+hero(
+    "Daily Research",
+    "Refresh local research data, analytics, and an optional local AI memo in one controlled workflow.",
+    badges=[("Research automation", "info"), ("Local model", "neutral"), ("No orders", "success")],
+)
+caveat_box("The status below is the latest database run. It does not prove that Windows Task Scheduler is currently active.", "warning")
 
 runs = fetch_dataframe(
     """
@@ -60,14 +64,14 @@ runs = fetch_dataframe(
 )
 latest = runs.iloc[0].to_dict() if not runs.empty else {}
 
-st.subheader("Latest Run")
 cols = st.columns(5)
-cols[0].metric("Status", str(latest.get("status", "none")))
-cols[1].metric("Symbols", _symbols_label(latest.get("symbols")))
-cols[2].metric("Provider", str(latest.get("provider", "none")))
-cols[3].metric("Memo", str(latest.get("local_ai_memo_id", "none")))
-cols[4].metric("Interval", str(latest.get("interval", "none")))
+with cols[0]: metric_card("Latest Status", latest.get("status", "none"), ("DB run", "info"))
+with cols[1]: metric_card("Symbols", _symbols_label(latest.get("symbols")), ("Universe", "neutral"))
+with cols[2]: metric_card("Provider", latest.get("provider", "none"), ("Local ingest", "neutral"))
+with cols[3]: metric_card("Memo", latest.get("local_ai_memo_id", "none"), ("Local AI", "success" if latest.get("local_ai_memo_id") else "warning"))
+with cols[4]: metric_card("Interval", latest.get("interval", "none"), ("Research data", "neutral"))
 
+section_header("Run Daily Research", "A local research workflow; never an execution workflow")
 with st.form("daily_research_form"):
     symbols_text = st.text_input("Symbols", value="AAPL MSFT")
     provider = st.text_input("Provider", value="yfinance")
@@ -96,11 +100,11 @@ if run_now:
     if result.errors:
         st.error("; ".join(result.errors))
 
-st.subheader("Daily Research Runs")
-dataframe_or_message(runs, "No daily research runs recorded yet.")
+with st.expander("Daily research run history", expanded=False):
+    compact_dataframe(runs, height=320, empty_message="No daily research runs recorded yet.")
 
 if latest:
-    st.subheader("Latest Run Details")
+    section_header("Latest Run Details")
     metadata = _metadata(latest.get("metadata_json"))
     st.write(
         {
@@ -111,10 +115,10 @@ if latest:
         }
     )
     metric_cols = st.columns(4)
-    metric_cols[0].metric("OpenBB inserted", str(metadata.get("fresh_openbb_ingestion_rows_inserted", "n/a")))
-    metric_cols[1].metric("Duplicates skipped", str(metadata.get("fresh_openbb_ingestion_rows_skipped_duplicate", "n/a")))
-    metric_cols[2].metric("AI retries", str(metadata.get("local_ai_retry_attempts_used", "n/a")))
-    metric_cols[3].metric("Compact retry", str(metadata.get("local_ai_compact_retry_used", "n/a")))
+    with metric_cols[0]: metric_card("OpenBB Inserted", metadata.get("fresh_openbb_ingestion_rows_inserted", "n/a"), ("Fresh rows", "info"))
+    with metric_cols[1]: metric_card("Duplicates Skipped", metadata.get("fresh_openbb_ingestion_rows_skipped_duplicate", "n/a"), ("Dedupe", "success"))
+    with metric_cols[2]: metric_card("AI Retries", metadata.get("local_ai_retry_attempts_used", "n/a"), ("Reliability", "neutral"))
+    with metric_cols[3]: metric_card("Compact Retry", metadata.get("local_ai_compact_retry_used", "n/a"), ("Fallback", "neutral"))
     st.write(
         {
             "fresh_ingestion_status": metadata.get("fresh_openbb_ingestion_status"),
@@ -137,7 +141,7 @@ if latest:
             """,
             (latest["local_ai_memo_id"],),
         )
-        st.subheader("Latest Local AI Memo")
+        section_header("Latest Local AI Memo")
         if memo.empty:
             st.info("Memo record not found.")
         else:
@@ -146,7 +150,7 @@ if latest:
             with st.expander("Stored prompt", expanded=False):
                 st.code(str(row["prompt_text"]), language="markdown")
 
-    st.subheader("Analytics Summary")
+    section_header("Analytics Summary")
     analytics_path = latest.get("analytics_report_path")
     if analytics_path:
         csv_path = Path(str(analytics_path)).with_name("openbb_summary.csv")

@@ -14,6 +14,7 @@ from core.config_loader import load_global_config  # noqa: E402
 from core.validation import assert_research_only  # noqa: E402
 from dashboard.components.signal_cards import render_signal  # noqa: E402
 from dashboard.components.tables import dataframe_or_message  # noqa: E402
+from dashboard.components.ui import caveat_box, hero, section_header, setup_page  # noqa: E402
 from data_brain.openbb_adapter import get_openbb_status  # noqa: E402
 from freqtrade_brain.batch_backtest_runner import freqtrade_cli_available  # noqa: E402
 from hummingbot_brain.spread_scanner import get_hummingbot_status  # noqa: E402
@@ -22,49 +23,31 @@ from nautilus_brain.nautilus_adapter import get_nautilus_status  # noqa: E402
 from qlib_brain.qlib_experiment_runner import get_qlib_status  # noqa: E402
 
 
-st.set_page_config(page_title="Trading Research OS", layout="wide")
+st.set_page_config(page_title="Trading Research OS", layout="wide", initial_sidebar_state="expanded")
 assert_research_only(load_global_config())
 initialize_database()
+setup_page()
 
-st.title("Private Trading Research OS")
-st.caption("Private research, backtesting, and strategy validation. No live trading, brokerage credentials, or real orders.")
-
-with st.sidebar:
-    st.subheader("Page guide")
-    st.markdown(
-        """
-        **Core**
-
-        Research Control Center · Market Cockpit · Daily Research
-
-        **Research**
-
-        Strategy Factory · Backtest Leaderboard · Risk Gate
-
-        **Data / AI**
-
-        OpenBB Ingestion · Local AI Research
-
-        **Engines / Labs**
-
-        Freqtrade · LEAN · Qlib · Market Making · Arbitrage · Nautilus
-        """
-    )
-    st.caption("All pages are research-only. No order execution or brokerage login is available.")
+hero(
+    "Trading Research OS",
+    "A private local-first cockpit for market data, backtest review, risk gates, and research memos.",
+    badges=[("Research only", "success"), ("Local-first", "info"), ("No order execution", "neutral")],
+)
+caveat_box("This workspace supports research and validation only. It does not connect to a broker or place real orders.", "info")
 
 left, right = st.columns([2, 1])
 with left:
-    st.subheader("Decision Cockpit")
+    section_header("Decision Cockpit", "Recent scored research decisions")
     decisions = fetch_dataframe("SELECT * FROM decisions ORDER BY created_at DESC LIMIT 10")
     dataframe_or_message(decisions, "No decisions yet. Run the v1 pipeline through score_strategies.py.")
 with right:
-    st.subheader("Latest Research Decision")
+    section_header("Latest Research Decision", "Most recent research action and risk context")
     if decisions.empty:
         st.info("No research decision available.")
     else:
         render_signal(decisions.iloc[0].to_dict())
 
-st.subheader("Backtest Leaderboard")
+section_header("Backtest Leaderboard", "Simulation results are evidence to review, not proof of future performance")
 leaderboard = fetch_dataframe(
     """
     SELECT bm.strategy_id, bm.total_return, bm.out_of_sample_return, bm.max_drawdown,
@@ -75,17 +58,18 @@ leaderboard = fetch_dataframe(
     ORDER BY bm.fee_slippage_adjusted_return DESC
     """
 )
-dataframe_or_message(leaderboard, "No backtest metrics yet.")
+with st.expander("View leaderboard", expanded=False):
+    dataframe_or_message(leaderboard, "No backtest metrics yet.")
 
 diag_left, diag_right = st.columns(2)
 with diag_left:
-    st.subheader("Data Sources")
+    section_header("Data Sources")
     sources = fetch_dataframe(
         "SELECT source, COUNT(*) AS candles FROM market_data GROUP BY source ORDER BY candles DESC"
     )
     dataframe_or_message(sources, "No market data sources recorded yet.")
 with diag_right:
-    st.subheader("Engine Status")
+    section_header("Engine Status")
     statuses = [
         {
             "engine": "freqtrade",
@@ -108,7 +92,7 @@ with diag_right:
         hide_index=True,
     )
 
-st.subheader("Backtest Engine Provenance")
+section_header("Backtest Engine Provenance")
 engine_runs = fetch_dataframe(
     """
     SELECT br.strategy_id, br.engine, br.status, bm.parser_warnings
@@ -118,10 +102,11 @@ engine_runs = fetch_dataframe(
     LIMIT 20
     """
 )
-dataframe_or_message(engine_runs, "No backtest run provenance yet.")
+with st.expander("View engine provenance", expanded=False):
+    dataframe_or_message(engine_runs, "No backtest run provenance yet.")
 
-st.subheader("Safety Defaults")
-st.write("- Real-money live trading: `disabled`")
-st.write("- Futures: `disabled`")
-st.write("- Leverage: `disabled`")
-st.write("- Highest research gate result: `APPROVED_FOR_DRY_RUN`")
+section_header("Safety Defaults")
+caveat_box(
+    "Live execution, futures, leverage, brokerage credentials, and real orders are disabled. The highest gate result is dry-run research approval.",
+    "success",
+)

@@ -1,0 +1,28 @@
+{
+  "visual_redesign_completed": true,
+  "global_css_added": true,
+  "sidebar_redesigned": true,
+  "control_center_redesigned": true,
+  "market_cockpit_redesigned": true,
+  "summary_first_pages": true,
+  "tables_moved_to_expanders": true,
+  "local_ai_guidance_visible": true,
+  "plotly_optional": true,
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 146,
+  "health_check_passed": true,
+  "streamlit_smoke_verified": true,
+  "visual_check_verified": false,
+  "manual_visual_check_required": true,
+  "safety_unsafe_count": 0,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Automated screenshot-based visual inspection was unavailable; manual browser review remains required.",
+    "Local AI was unavailable during the health check; start Ollama to enable memo generation.",
+    "LEAN executable backtest remains unverified after timeout.",
+    "Qlib package/trainer remains unavailable.",
+    "SQLite fallback remains active because DuckDB is not installed."
+  ]
+}
+

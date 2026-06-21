@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
 
 from core.database import fetch_dataframe, initialize_database  # noqa: E402
 from dashboard.components.tables import dataframe_or_message  # noqa: E402
+from dashboard.components.ui import caveat_box, compact_dataframe, hero, metric_card, section_header, setup_page  # noqa: E402
 from qlib_brain.qlib_adapter import get_qlib_status  # noqa: E402
 from qlib_brain.qlib_runner import run_qlib_experiment  # noqa: E402
 
@@ -25,16 +26,19 @@ def _show_json(label: str, value) -> None:
 
 
 initialize_database()
-
-st.title("Qlib Research")
-st.caption("Research-only ML/factor analysis. Not trading advice. This page does not place orders.")
+setup_page()
+hero(
+    "Qlib Research",
+    "Prepare no-lookahead factor datasets for optional local ML research.",
+    badges=[("Dataset export works", "success"), ("Trainer optional", "warning"), ("No predictions claimed", "neutral")],
+)
 
 status = get_qlib_status()
 cols = st.columns(4)
-cols[0].metric("Qlib package", "available" if status["qlib_import_available"] else "missing")
-cols[1].metric("Status", status["status"])
-cols[2].metric("Mode", status["mode"])
-cols[3].metric("Live execution allowed", str(status["safe_for_live"]))
+with cols[0]: metric_card("Qlib Package", "Available" if status["qlib_import_available"] else "Missing", ("Optional trainer", "success" if status["qlib_import_available"] else "warning"))
+with cols[1]: metric_card("Status", status["status"], ("Local adapter", "neutral"))
+with cols[2]: metric_card("Mode", status["mode"], ("Research only", "info"))
+with cols[3]: metric_card("Live Execution", "Disabled", ("safe_for_live=False", "success"))
 if status["version"]:
     st.write({"version": status["version"]})
 if status["warnings"]:
@@ -42,7 +46,7 @@ if status["warnings"]:
 if status["errors"]:
     st.error("; ".join(status["errors"]))
 if not status["qlib_import_available"]:
-    st.info("Dataset export remains available. The true Qlib trainer is not installed and experiment execution is unavailable.")
+    caveat_box("Dataset export remains available. The true Qlib trainer is not installed, so no real Qlib predictions are produced.", "warning")
 
 with st.form("qlib_research_form"):
     symbols_text = st.text_input("Symbols", value="AAPL MSFT")
@@ -77,10 +81,10 @@ exports = fetch_dataframe(
     LIMIT 25
     """
 )
-st.subheader("Latest Dataset Exports")
+section_header("Latest Dataset Exports")
 export_cols = st.columns(2)
-export_cols[0].metric("Dataset exports", len(exports))
-export_cols[1].metric("Latest rows", int(exports.iloc[0]["row_count"]) if not exports.empty else 0)
+with export_cols[0]: metric_card("Dataset Exports", len(exports), ("Local artifacts", "neutral"))
+with export_cols[1]: metric_card("Latest Rows", int(exports.iloc[0]["row_count"]) if not exports.empty else 0, ("Feature dataset", "success"))
 with st.expander("Dataset export history", expanded=False):
     dataframe_or_message(exports, "No Qlib dataset exports recorded yet.", height=320)
 
@@ -93,16 +97,16 @@ runs = fetch_dataframe(
     LIMIT 25
     """
 )
-st.subheader("Latest Qlib Research Runs")
+section_header("Latest Qlib Research Runs")
 run_cols = st.columns(2)
-run_cols[0].metric("Recorded runs", len(runs))
-run_cols[1].metric("Latest status", str(runs.iloc[0]["status"]) if not runs.empty else "none")
+with run_cols[0]: metric_card("Recorded Runs", len(runs), ("Local history", "neutral"))
+with run_cols[1]: metric_card("Latest Status", str(runs.iloc[0]["status"]) if not runs.empty else "none", ("Trainer missing", "warning"))
 with st.expander("Qlib run history", expanded=False):
     dataframe_or_message(runs, "No Qlib research runs recorded yet.", height=320)
 
 if not runs.empty:
     latest = runs.iloc[0]
-    st.subheader("Latest Run Details")
+    section_header("Latest Run Details")
     st.write(
         {
             "run_id": latest["run_id"],

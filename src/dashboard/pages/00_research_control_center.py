@@ -12,6 +12,14 @@ if str(ROOT) not in sys.path:
 
 from core.database import initialize_database  # noqa: E402
 from dashboard.components.tables import dataframe_or_message  # noqa: E402
+from dashboard.components.ui import (  # noqa: E402
+    caveat_box,
+    compact_dataframe,
+    hero,
+    metric_card,
+    section_header,
+    setup_page,
+)
 from dashboard.control_center import (  # noqa: E402
     build_latest_runs,
     build_next_actions,
@@ -25,61 +33,57 @@ from dashboard.control_center import (  # noqa: E402
 
 
 initialize_database()
+setup_page()
 
-st.title("Research Control Center")
-st.caption("Unified read-only status for local research engines. No credentials, live trading, or orders.")
+hero(
+    "Research Control Center",
+    "Private local-first market research OS. Research-only. No live trading. No orders.",
+    badges=[
+        ("Research only", "success"),
+        ("No orders", "success"),
+        ("No broker credentials", "neutral"),
+        ("Local-first", "info"),
+        ("Private repo", "neutral"),
+    ],
+)
 
 statuses = get_latest_engine_statuses()
-cols = st.columns(6)
-cols[0].metric("OpenBB rows", str(statuses["openbb"]["rows"]), statuses["openbb"]["status"])
-cols[1].metric("Local AI", statuses["local_ai"]["status"], str(statuses["local_ai"].get("model")))
-cols[2].metric(
-    "Latest Daily Run",
-    statuses["latest_daily_run"]["status"],
-    f"scheduler={statuses['latest_daily_run']['scheduler_state']}",
-)
-cols[3].metric(
-    "LEAN",
-    str(statuses["lean"]["status"]),
-    f"cli={statuses['lean']['cli_detected']} exec={statuses['lean']['latest_executable_status']}",
-)
-cols[4].metric("Qlib", str(statuses["qlib"]["status"]), f"installed={statuses['qlib']['available']}")
-cols[5].metric("Safety", statuses["safety"]["status"])
-
-if not statuses["lean"].get("executable_verified"):
-    st.warning("LEAN CLI/skeleton may be available, but executable LEAN backtest remains unverified until a local Docker/runtime run completes.")
-st.info("Daily status is the latest pipeline DB run. Windows Task Scheduler state is not queried by this page.")
-
-st.subheader("What this means")
-meaning_left, meaning_right = st.columns(2)
-with meaning_left:
-    st.markdown(
-        """
-        - **OpenBB rows** measure local data availability, not market freshness guarantees.
-        - **Local AI** reflects whether the local Ollama runtime answers now.
-        - **Daily run** is the latest database record, not proof that Windows Task Scheduler is active.
-        """
-    )
-with meaning_right:
-    st.markdown(
-        """
-        - **LEAN** has a data bridge and skeleton; executable backtesting remains unverified.
-        - **Qlib** dataset export works; the Qlib trainer package is not installed.
-        - **Safety** means live execution and real-order controls remain disabled.
-        """
-    )
-
-st.subheader("Data Health")
+checklist = build_safety_checklist()
+unsafe_count = int((checklist["status"] == "unsafe").sum()) if not checklist.empty else 0
 health = get_openbb_data_health()
-st.metric("Local OpenBB rows", health["total_rows"])
-dataframe_or_message(health["rows_by_symbol"], "No OpenBB market rows found.")
-with st.expander("Duplicate timestamp check", expanded=False):
-    dataframe_or_message(health["duplicates"], "No OpenBB duplicate timestamp groups detected.")
+
+row_one = st.columns(3)
+with row_one[0]:
+    metric_card("Data", f"{statuses['openbb']['rows']:,} rows", (statuses["openbb"]["status"], "success"), "Local OpenBB market data")
+with row_one[1]:
+    ai_available = statuses["local_ai"]["status"] == "available"
+    metric_card("Local AI", statuses["local_ai"]["status"], (statuses["local_ai"]["status"], "success" if ai_available else "warning"), f"Model: {statuses['local_ai'].get('model')}")
+with row_one[2]:
+    metric_card("Daily Research", statuses["latest_daily_run"]["status"], ("Latest DB run", "info"), "Scheduler state is not verified here")
+
+row_two = st.columns(3)
+with row_two[0]:
+    lean_verified = bool(statuses["lean"].get("executable_verified"))
+    metric_card("LEAN", "Executable verified" if lean_verified else "Executable unverified", ("CLI / skeleton available", "warning" if not lean_verified else "success"), str(statuses["lean"].get("latest_executable_status")))
+with row_two[1]:
+    qlib_available = bool(statuses["qlib"].get("available"))
+    metric_card("Qlib", "Trainer available" if qlib_available else "Dataset export only", ("Package missing" if not qlib_available else "Available", "warning" if not qlib_available else "success"), "True Qlib execution is optional")
+with row_two[2]:
+    metric_card("Safety", f"{unsafe_count} unsafe", ("Controls disabled", "success" if unsafe_count == 0 else "danger"), "Live and order paths remain off")
+
+section_header("What this means", "A quick reading guide for the current workstation state")
+meaning_cols = st.columns(3)
+with meaning_cols[0]:
+    caveat_box("Healthy: OpenBB rows are local data availability, and the safety count confirms disabled execution controls.", "success")
+with meaning_cols[1]:
+    caveat_box("Caveat: Daily Research is the latest database run, not proof that Windows Task Scheduler is currently active.", "warning")
+with meaning_cols[2]:
+    caveat_box("Future work: LEAN execution remains unverified; Qlib dataset export works while its trainer package is missing.", "neutral")
 
 qlib_exports = get_latest_qlib_exports(1)
 lean_runs = get_latest_lean_runs(1)
 
-st.subheader("Next Actions")
+section_header("Next Actions", "Static recommendations based on local status only")
 for action in build_next_actions():
     st.write(f"- {action}")
 
@@ -95,10 +99,14 @@ with st.expander("Latest Runs And Artifacts", expanded=False):
     dataframe_or_message(lean_runs, "No LEAN run recorded.")
 
 with st.expander("Safety Details", expanded=False):
-    checklist = build_safety_checklist()
     dataframe_or_message(checklist, "Safety checklist unavailable.")
     if not checklist.empty and (checklist["status"] == "unsafe").any():
         st.error("One or more safety checks are unsafe. Do not run research workflows until fixed.")
 
-with st.expander("Raw Status JSON", expanded=False):
+with st.expander("Raw Debug Tables", expanded=False):
+    st.write("OpenBB rows by symbol")
+    compact_dataframe(health["rows_by_symbol"], height=240, empty_message="No OpenBB market rows found.")
+    st.write("Duplicate timestamp groups")
+    compact_dataframe(health["duplicates"], height=220, empty_message="No duplicate timestamp groups detected.")
+    st.write("Raw status JSON")
     st.code(json.dumps(statuses, indent=2, default=str), language="json")
