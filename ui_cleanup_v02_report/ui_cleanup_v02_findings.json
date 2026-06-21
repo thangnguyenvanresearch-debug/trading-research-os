@@ -1,0 +1,24 @@
+{
+  "market_cockpit_fixed": true,
+  "plotly_fallback_added": true,
+  "research_only_wording_improved": true,
+  "control_center_improved": true,
+  "local_ai_guidance_added": true,
+  "tables_reduced_or_expanded": true,
+  "compile_passed": true,
+  "pytest_passed": true,
+  "test_count": 141,
+  "health_check_passed": true,
+  "streamlit_smoke_verified": true,
+  "streamlit_http_status": 200,
+  "visual_check_verified": false,
+  "safety_unsafe_count": 0,
+  "safety_issues": [],
+  "remaining_issues": [
+    "Manual visual browser inspection remains recommended because browser automation could not initialize.",
+    "Ollama is currently unavailable; start it before Local AI use.",
+    "LEAN executable backtest remains unverified.",
+    "Qlib package/trainer remains unavailable.",
+    "DuckDB is absent; SQLite fallback remains active."
+  ]
+}

@@ -61,9 +61,28 @@ status_cols[1].metric("Available", str(status["available"]))
 status_cols[2].metric("Model", str(status["model"]))
 status_cols[3].metric("Safe Mode", str(status["safe_mode"]))
 status_cols[4].metric("Base URL", str(status["base_url"]))
-if status.get("error"):
-    st.info(f"Local AI unavailable: {status['error']}")
-st.dataframe([status], use_container_width=True, hide_index=True)
+if not status.get("available"):
+    st.error("Status: unavailable")
+    st.write(f"Reason: `{status.get('error') or 'Ollama did not answer the local status check.'}`")
+    st.markdown(
+        """
+        Start the local service in a terminal:
+
+        ```powershell
+        ollama serve
+        ```
+
+        Verify installed models:
+
+        ```powershell
+        ollama list
+        ```
+
+        Expected model: `qwen2.5:3b`
+        """
+    )
+with st.expander("Local AI runtime details", expanded=False):
+    st.dataframe([status], use_container_width=True, hide_index=True, height=180)
 
 st.subheader("Run Local Research")
 with st.form("local_ai_research_form"):
@@ -75,7 +94,7 @@ with st.form("local_ai_research_form"):
     include_backtests = st.checkbox("Include latest backtest metrics", value=False)
     include_risk = st.checkbox("Include latest risk reviews", value=False)
     include_decisions = st.checkbox("Include latest decisions", value=False)
-    run_clicked = st.form_submit_button("Run local AI research")
+    run_clicked = st.form_submit_button("Run local AI research", disabled=not bool(status.get("available")))
 
 symbols = [part.strip() for part in symbols_text.split() if part.strip()]
 provider_filter = provider.strip() or None
@@ -127,7 +146,11 @@ memos = fetch_dataframe(
     LIMIT 20
     """
 )
-dataframe_or_message(memos, "No local AI research memos recorded yet.")
+memo_cols = st.columns(2)
+memo_cols[0].metric("Stored memos", len(memos))
+memo_cols[1].metric("Latest memo status", str(memos.iloc[0]["status"]) if not memos.empty else "none")
+with st.expander("Memo history", expanded=False):
+    dataframe_or_message(memos, "No local AI research memos recorded yet.", height=320)
 
 if not memos.empty:
     selected = st.selectbox("Memo response", options=list(memos["memo_id"]))
@@ -149,4 +172,3 @@ if not memos.empty:
                 st.json(json.loads(str(row["source_context_json"])))
             except Exception:
                 st.code(str(row["source_context_json"]))
-

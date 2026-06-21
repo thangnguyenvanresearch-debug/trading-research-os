@@ -16,6 +16,7 @@ from dashboard.components.signal_cards import render_signal  # noqa: E402
 
 initialize_database()
 st.title("Market Cockpit")
+st.caption("Local market context and research decisions. Not financial advice; no orders are placed.")
 symbols = fetch_dataframe("SELECT DISTINCT symbol FROM market_data ORDER BY symbol")
 symbol = st.selectbox("Symbol", symbols["symbol"].tolist() if not symbols.empty else ["BTC/USDT"])
 
@@ -47,9 +48,8 @@ with left:
     st.subheader("Current Regime")
     st.dataframe(regime, use_container_width=True, hide_index=True)
 with right:
-    st.subheader("Latest Decision")
+    st.subheader("Latest Research Decision")
     if decision.empty:
-        st.info("No decision recorded.")
+        st.info("No research decision recorded.")
     else:
         render_signal(decision.iloc[0].to_dict())
-

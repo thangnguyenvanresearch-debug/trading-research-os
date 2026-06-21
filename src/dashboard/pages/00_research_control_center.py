@@ -50,43 +50,55 @@ if not statuses["lean"].get("executable_verified"):
     st.warning("LEAN CLI/skeleton may be available, but executable LEAN backtest remains unverified until a local Docker/runtime run completes.")
 st.info("Daily status is the latest pipeline DB run. Windows Task Scheduler state is not queried by this page.")
 
-st.subheader("Engine Registry")
-dataframe_or_message(load_engine_registry(), "Engine registry unavailable.")
-
-st.subheader("Latest Runs And Artifacts")
-latest_runs = build_latest_runs(limit=5)
-dataframe_or_message(latest_runs, "No research runs recorded yet.")
-
-st.subheader("Safety Checklist")
-checklist = build_safety_checklist()
-dataframe_or_message(checklist, "Safety checklist unavailable.")
-if not checklist.empty and (checklist["status"] == "unsafe").any():
-    st.error("One or more safety checks are unsafe. Do not run research workflows until fixed.")
+st.subheader("What this means")
+meaning_left, meaning_right = st.columns(2)
+with meaning_left:
+    st.markdown(
+        """
+        - **OpenBB rows** measure local data availability, not market freshness guarantees.
+        - **Local AI** reflects whether the local Ollama runtime answers now.
+        - **Daily run** is the latest database record, not proof that Windows Task Scheduler is active.
+        """
+    )
+with meaning_right:
+    st.markdown(
+        """
+        - **LEAN** has a data bridge and skeleton; executable backtesting remains unverified.
+        - **Qlib** dataset export works; the Qlib trainer package is not installed.
+        - **Safety** means live execution and real-order controls remain disabled.
+        """
+    )
 
 st.subheader("Data Health")
 health = get_openbb_data_health()
-st.write({"total_openbb_rows": health["total_rows"]})
+st.metric("Local OpenBB rows", health["total_rows"])
 dataframe_or_message(health["rows_by_symbol"], "No OpenBB market rows found.")
-st.write("Duplicate symbol/provider/interval/timestamp groups")
-dataframe_or_message(health["duplicates"], "No OpenBB duplicate timestamp groups detected.")
+with st.expander("Duplicate timestamp check", expanded=False):
+    dataframe_or_message(health["duplicates"], "No OpenBB duplicate timestamp groups detected.")
 
 qlib_exports = get_latest_qlib_exports(1)
-st.write("Latest Qlib Dataset")
-if qlib_exports.empty:
-    st.info("No Qlib dataset export recorded.")
-else:
-    dataframe_or_message(qlib_exports, "No Qlib dataset export recorded.")
-
 lean_runs = get_latest_lean_runs(1)
-st.write("Latest LEAN Research Artifact")
-if lean_runs.empty:
-    st.info("No LEAN run recorded.")
-else:
-    dataframe_or_message(lean_runs, "No LEAN run recorded.")
 
 st.subheader("Next Actions")
 for action in build_next_actions():
     st.write(f"- {action}")
+
+with st.expander("Engine Registry", expanded=False):
+    dataframe_or_message(load_engine_registry(), "Engine registry unavailable.")
+
+with st.expander("Latest Runs And Artifacts", expanded=False):
+    latest_runs = build_latest_runs(limit=5)
+    dataframe_or_message(latest_runs, "No research runs recorded yet.")
+    st.write("Latest Qlib dataset")
+    dataframe_or_message(qlib_exports, "No Qlib dataset export recorded.")
+    st.write("Latest LEAN research artifact")
+    dataframe_or_message(lean_runs, "No LEAN run recorded.")
+
+with st.expander("Safety Details", expanded=False):
+    checklist = build_safety_checklist()
+    dataframe_or_message(checklist, "Safety checklist unavailable.")
+    if not checklist.empty and (checklist["status"] == "unsafe").any():
+        st.error("One or more safety checks are unsafe. Do not run research workflows until fixed.")
 
 with st.expander("Raw Status JSON", expanded=False):
     st.code(json.dumps(statuses, indent=2, default=str), language="json")

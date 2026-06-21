@@ -22,10 +22,12 @@ else:
     selected = st.selectbox("Review", reviews["review_id"].tolist())
     row = reviews[reviews["review_id"] == selected].iloc[0]
     st.write(f"Strategy: `{row['strategy_id']}`")
-    st.write(f"Status: `{row['status']}`")
+    display_status = "Rejected by Risk Gate" if row["status"] == "rejected" else str(row["status"])
+    st.write(f"Risk Gate Result: `{display_status}`")
     render_risk_flags(row["flags"])
     if row["status"] == "approved_for_dry_run":
         st.info("Approved for dry-run only. Live trading remains disabled.")
     elif row["status"] == "rejected":
-        st.info("Rejected strategies must not be paper/dry-run candidates until risk flags are resolved.")
-    st.dataframe(reviews, use_container_width=True, hide_index=True)
+        st.info("Rejected by Risk Gate. This research candidate must not enter paper/dry-run review until flags are resolved.")
+    with st.expander("All risk review records", expanded=False):
+        st.dataframe(reviews, use_container_width=True, hide_index=True, height=320)

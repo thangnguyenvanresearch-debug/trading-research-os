@@ -45,7 +45,7 @@ st.subheader("OpenBB Status")
 status_cols = st.columns(4)
 status_cols[0].metric("Installed", str(status["installed"]))
 status_cols[1].metric("Status", str(status["status"]))
-status_cols[2].metric("Safe For Live", str(status["safe_for_live"]))
+status_cols[2].metric("Live execution allowed", str(status["safe_for_live"]))
 status_cols[3].metric("Latest Run", str(latest_run.get("run_id", "none")))
 st.dataframe([status], use_container_width=True, hide_index=True)
 

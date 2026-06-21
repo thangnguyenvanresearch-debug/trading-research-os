@@ -34,11 +34,12 @@ cols = st.columns(4)
 cols[0].metric("LEAN CLI", "available" if status["lean_cli_available"] else "missing")
 cols[1].metric("Docker", "available" if status["docker_available"] else "missing")
 cols[2].metric("Mode", status["mode"])
-cols[3].metric("Safe for live", str(status["safe_for_live"]))
+cols[3].metric("Live execution allowed", str(status["safe_for_live"]))
 if status["warnings"]:
     st.warning("; ".join(status["warnings"]))
 if status["errors"]:
     st.error("; ".join(status["errors"]))
+st.info("LEAN data bridge and skeleton are available; executable local backtesting remains unverified after timeout.")
 
 with st.form("lean_research_form"):
     symbols_text = st.text_input("Symbols", value="AAPL MSFT")
@@ -76,7 +77,11 @@ runs = fetch_dataframe(
     """
 )
 st.subheader("Latest LEAN Research Runs")
-dataframe_or_message(runs, "No LEAN research runs recorded yet.")
+run_cols = st.columns(2)
+run_cols[0].metric("Recorded runs", len(runs))
+run_cols[1].metric("Latest status", str(runs.iloc[0]["status"]) if not runs.empty else "none")
+with st.expander("LEAN run history", expanded=False):
+    dataframe_or_message(runs, "No LEAN research runs recorded yet.", height=320)
 
 if not runs.empty:
     latest = runs.iloc[0]
@@ -102,5 +107,5 @@ if not runs.empty:
         """,
         (latest["run_id"],),
     )
-    st.subheader("Parsed Metrics")
-    dataframe_or_message(metrics, "No parsed LEAN metrics available.")
+    with st.expander("Parsed Metrics", expanded=False):
+        dataframe_or_message(metrics, "No parsed LEAN metrics available.", height=280)

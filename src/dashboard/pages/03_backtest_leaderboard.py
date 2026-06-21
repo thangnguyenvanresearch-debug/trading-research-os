@@ -14,6 +14,7 @@ from core.database import fetch_dataframe, initialize_database  # noqa: E402
 
 initialize_database()
 st.title("Backtest Leaderboard")
+st.caption("Research comparison only. Backtests are not proof of future performance.")
 df = fetch_dataframe(
     """
     SELECT bm.strategy_id, bm.total_return, bm.out_of_sample_return, bm.max_drawdown,
@@ -24,5 +25,16 @@ df = fetch_dataframe(
     ORDER BY bm.fee_slippage_adjusted_return DESC
     """
 )
-st.dataframe(df, use_container_width=True, hide_index=True)
+summary_cols = st.columns(3)
+summary_cols[0].metric("Strategies reviewed", len(df))
+summary_cols[1].metric("Top strategy", str(df.iloc[0]["strategy_id"]) if not df.empty else "none")
+summary_cols[2].metric(
+    "Top adjusted return",
+    f"{float(df.iloc[0]['fee_slippage_adjusted_return']):.2%}" if not df.empty else "n/a",
+)
 
+with st.expander("Full leaderboard", expanded=True):
+    if df.empty:
+        st.info("No backtest metrics recorded yet.")
+    else:
+        st.dataframe(df, use_container_width=True, hide_index=True, height=360)

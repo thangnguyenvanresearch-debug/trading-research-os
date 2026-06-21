@@ -3,9 +3,8 @@ from __future__ import annotations
 import streamlit as st
 
 
-def dataframe_or_message(df, message: str) -> None:
+def dataframe_or_message(df, message: str, *, height: int | None = 320) -> None:
     if df is None or df.empty:
         st.info(message)
     else:
-        st.dataframe(df, use_container_width=True, hide_index=True)
-
+        st.dataframe(df, use_container_width=True, hide_index=True, height=height)

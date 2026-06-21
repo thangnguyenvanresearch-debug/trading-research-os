@@ -34,13 +34,15 @@ cols = st.columns(4)
 cols[0].metric("Qlib package", "available" if status["qlib_import_available"] else "missing")
 cols[1].metric("Status", status["status"])
 cols[2].metric("Mode", status["mode"])
-cols[3].metric("Safe for live", str(status["safe_for_live"]))
+cols[3].metric("Live execution allowed", str(status["safe_for_live"]))
 if status["version"]:
     st.write({"version": status["version"]})
 if status["warnings"]:
     st.warning("; ".join(status["warnings"]))
 if status["errors"]:
     st.error("; ".join(status["errors"]))
+if not status["qlib_import_available"]:
+    st.info("Dataset export remains available. The true Qlib trainer is not installed and experiment execution is unavailable.")
 
 with st.form("qlib_research_form"):
     symbols_text = st.text_input("Symbols", value="AAPL MSFT")
@@ -76,7 +78,11 @@ exports = fetch_dataframe(
     """
 )
 st.subheader("Latest Dataset Exports")
-dataframe_or_message(exports, "No Qlib dataset exports recorded yet.")
+export_cols = st.columns(2)
+export_cols[0].metric("Dataset exports", len(exports))
+export_cols[1].metric("Latest rows", int(exports.iloc[0]["row_count"]) if not exports.empty else 0)
+with st.expander("Dataset export history", expanded=False):
+    dataframe_or_message(exports, "No Qlib dataset exports recorded yet.", height=320)
 
 runs = fetch_dataframe(
     """
@@ -88,7 +94,11 @@ runs = fetch_dataframe(
     """
 )
 st.subheader("Latest Qlib Research Runs")
-dataframe_or_message(runs, "No Qlib research runs recorded yet.")
+run_cols = st.columns(2)
+run_cols[0].metric("Recorded runs", len(runs))
+run_cols[1].metric("Latest status", str(runs.iloc[0]["status"]) if not runs.empty else "none")
+with st.expander("Qlib run history", expanded=False):
+    dataframe_or_message(runs, "No Qlib research runs recorded yet.", height=320)
 
 if not runs.empty:
     latest = runs.iloc[0]
@@ -114,5 +124,5 @@ if not runs.empty:
         """,
         (latest["run_id"],),
     )
-    st.subheader("Predictions / Scores")
-    dataframe_or_message(predictions, "No real Qlib predictions recorded for this run.")
+    with st.expander("Predictions / Scores", expanded=False):
+        dataframe_or_message(predictions, "No real Qlib predictions recorded for this run.", height=320)

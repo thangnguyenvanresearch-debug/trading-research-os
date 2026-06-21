@@ -26,8 +26,31 @@ st.set_page_config(page_title="Trading Research OS", layout="wide")
 assert_research_only(load_global_config())
 initialize_database()
 
-st.title("Multi-Brain AI Trading Research OS")
-st.caption("Research, backtesting, paper trading, and strategy validation. Live trading is disabled in v1.")
+st.title("Private Trading Research OS")
+st.caption("Private research, backtesting, and strategy validation. No live trading, brokerage credentials, or real orders.")
+
+with st.sidebar:
+    st.subheader("Page guide")
+    st.markdown(
+        """
+        **Core**
+
+        Research Control Center · Market Cockpit · Daily Research
+
+        **Research**
+
+        Strategy Factory · Backtest Leaderboard · Risk Gate
+
+        **Data / AI**
+
+        OpenBB Ingestion · Local AI Research
+
+        **Engines / Labs**
+
+        Freqtrade · LEAN · Qlib · Market Making · Arbitrage · Nautilus
+        """
+    )
+    st.caption("All pages are research-only. No order execution or brokerage login is available.")
 
 left, right = st.columns([2, 1])
 with left:
@@ -35,9 +58,9 @@ with left:
     decisions = fetch_dataframe("SELECT * FROM decisions ORDER BY created_at DESC LIMIT 10")
     dataframe_or_message(decisions, "No decisions yet. Run the v1 pipeline through score_strategies.py.")
 with right:
-    st.subheader("Latest Signal")
+    st.subheader("Latest Research Decision")
     if decisions.empty:
-        st.info("No signal available.")
+        st.info("No research decision available.")
     else:
         render_signal(decisions.iloc[0].to_dict())
 
@@ -101,4 +124,4 @@ st.subheader("Safety Defaults")
 st.write("- Real-money live trading: `disabled`")
 st.write("- Futures: `disabled`")
 st.write("- Leverage: `disabled`")
-st.write("- Highest v1 permission: `APPROVED_FOR_DRY_RUN`")
+st.write("- Highest research gate result: `APPROVED_FOR_DRY_RUN`")
